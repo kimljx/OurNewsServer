@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <!--设置开发者模式-->
+    <constant name="struts.devMode" value="true"/>
+    <!--设置主题-->
+    <constant name="struts.ui.theme" value="simple"/>
+    <!--&lt;!&ndash;设置请求方式为.dao&ndash;&gt;-->
+    <!--<constant name="struts.action.extension" value="dao"/>-->
+
+    <constant name="struts.multipart.maxSize" value="10485760"/>
+
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+
+    <package name="Web" extends="struts-default">
+        <action name="downloadImage" class="com.ournews.action.FileDownloadAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/octet-stream</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;fileName="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
+    </package>
+
+    <package name="FileUpload" extends="json-default">
+        <action name="uploadImage" method="action" class="com.ournews.action.FileUploadAction">
+            <result type="json"/>
+        </action>
+    </package>
+
+    <package name="UserRequest" extends="json-default">
+        <action name="login" method="action" class="com.ournews.action.user.UserLoginAction">
+            <result type="json"/>
+        </action>
+        <action name="register" method="action" class="com.ournews.action.user.UserRegisterAction">
+            <result type="json"/>
+        </action>
+        <action name="changeInfo" method="action" class="com.ournews.action.user.UserChangeInfoAction">
+            <result type="json"/>
+        </action>
+        <action name="getHomeNews" method="action" class="com.ournews.action.user.UserGetHomeNewsAction">
+            <result type="json"/>
+        </action>
+        <action name="getNewList" method="action" class="com.ournews.action.user.UserGetNewListAction">
+            <result type="json"/>
+        </action>
+        <action name="searchNew" method="action" class="com.ournews.action.user.UserSearchNewAction">
+            <result type="json"/>
+        </action>
+        <action name="getNewContent" method="action" class="com.ournews.action.user.UserGetNewContentAction">
+            <result type="json"/>
+        </action>
+        <action name="collectNew" method="action" class="com.ournews.action.user.UserCollectNewAction">
+            <result type="json"/>
+        </action>
+        <action name="sendComment" method="action" class="com.ournews.action.user.UserWriteCommentAction">
+            <result type="json"/>
+        </action>
+        <action name="getComment" method="action" class="com.ournews.action.user.UserGetNewCommentAction">
+            <result type="json"/>
+        </action>
+    </package>
+
+    <package name="ManagerRequest" extends="json-default">
+        <action name="addNews" method="action" class="com.ournews.action.manager.ManagerAddNewsAction">
+            <result type="json"/>
+        </action>
+    </package>
+</struts>
