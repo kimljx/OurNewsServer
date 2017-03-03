@@ -38,7 +38,6 @@ public class FileUploadAction extends BaseAction {
         try {
             JSONArray jsonArray = new JSONArray();
             for (int i = 0; i < upload.length; i++) {
-                System.out.printf(uploadContentType[i]);
                 if (!uploadContentType[i].startsWith("image/")) {
                     jsonObject = new JSONObject();
                     setResult(false);
@@ -71,10 +70,6 @@ public class FileUploadAction extends BaseAction {
                 }
             }
             jsonObject.put("image_list", jsonArray);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            setResult(false);
-            setErrorCode(Constant.SERVER_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
             setResult(false);

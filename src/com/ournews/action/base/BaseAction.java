@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by Misutesu on 2017/1/15 0015.
  */
-public abstract class BaseAction extends ActionSupport implements ServletRequestAware, ServletResponseAware{
+public abstract class BaseAction extends ActionSupport implements ServletRequestAware, ServletResponseAware {
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected JSONObject jsonObject = new JSONObject();
@@ -49,8 +49,10 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 
     public void sendJSON() throws IOException {
         if (response != null) {
-            response.setContentType("text/html;charset=utf-8");
+//            response.setContentType("text/html;charset=utf-8");
+            response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
+            response.setHeader("Access-Control-Allow-Origin", "*");
             response.getOutputStream().write(jsonObject.toString().getBytes("UTF-8"));
             response.getOutputStream().flush();
             response.getOutputStream().close();

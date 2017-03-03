@@ -3,7 +3,6 @@ package com.ournews.action.user;
 import com.ournews.action.base.BaseAction;
 import com.ournews.bean.User;
 import com.ournews.dao.impl.UserDaoImpl;
-import com.ournews.module.view.UserLoginView;
 import com.ournews.utils.Constant;
 import com.ournews.utils.MyUtils;
 import net.sf.json.JSONObject;
@@ -13,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by Misutesu on 2017/1/13 0013.
  */
-public class UserLoginAction extends BaseAction implements UserLoginView {
+public class UserLoginAction extends BaseAction {
 
     private String loginName;
     private String password;
@@ -53,17 +52,5 @@ public class UserLoginAction extends BaseAction implements UserLoginView {
                 jsonObject.put("user", userJSON);
             }
         }
-    }
-
-    @Override
-    public void sendSuccess(User user) {
-        setResult(true);
-        JSONObject userJSON = new JSONObject();
-        userJSON.put("id", user.getId());
-        userJSON.put("loginname", user.getLoginName());
-        userJSON.put("nickname", user.getNickName());
-        userJSON.put("sex", user.getSex());
-        userJSON.put("photo", user.getPhoto());
-        jsonObject.put("user", userJSON);
     }
 }
