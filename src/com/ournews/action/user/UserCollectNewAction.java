@@ -21,7 +21,7 @@ public class UserCollectNewAction extends BaseAction {
         id = request.getParameter("id");
         uid = request.getParameter("uid");
         type = request.getParameter("type");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();

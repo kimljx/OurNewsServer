@@ -29,7 +29,7 @@ public class ManagerAddNewsAction extends BaseAction {
         content = request.getParameter("content");
         createTime = request.getParameter("createtime");
         type = request.getParameter("type");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();
@@ -43,7 +43,7 @@ public class ManagerAddNewsAction extends BaseAction {
     public void createJSON() {
         if (!MyUtils.isNull(title) && !MyUtils.isNull(cover) && !MyUtils.isNull(abstractContent)
                 && !MyUtils.isNull(content) && !MyUtils.isNull(createTime) && !MyUtils.isNumber(type, 0, 6)) {
-            if (newPresenter.addNews(title, cover, abstractContent, content, createTime, type)) {
+            if (newDao.addNews(title, cover, abstractContent, content, createTime, type)) {
                 setResult(true);
                 try {
                     String uploadPath = ServletActionContext.getServletContext().getRealPath("upload");

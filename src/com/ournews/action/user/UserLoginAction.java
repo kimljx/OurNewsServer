@@ -16,11 +16,13 @@ public class UserLoginAction extends BaseAction {
 
     private String loginName;
     private String password;
+    private String time;
 
     @Override
     public void action() {
         loginName = request.getParameter("loginname");
         password = request.getParameter("password");
+        time = request.getParameter("time");
         userDao = new UserDaoImpl();
 
         try {
@@ -33,11 +35,14 @@ public class UserLoginAction extends BaseAction {
 
     @Override
     public void createJSON() {
-        if (MyUtils.isNull(loginName) || MyUtils.isNull(password)) {
+        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time)) {
             setResult(false);
             setErrorCode(Constant.VALUES_ERROR);
+        } else if ((System.currentTimeMillis() - Long.valueOf(time)) > Constant.CONNECT_OUT_TIME) {
+            setResult(false);
+            setErrorCode(Constant.CONNECT_TIME_OUT);
         } else {
-            User user = userDao.login(loginName, password);
+            User user = userDao.login(loginName, password, time);
             if (user == null) {
                 setResult(false);
                 setErrorCode(Constant.LOGIN_NAME_NO_EXIST_OR_PASSWORD_ERROR);
@@ -49,6 +54,7 @@ public class UserLoginAction extends BaseAction {
                 userJSON.put("nickname", user.getNickName());
                 userJSON.put("sex", user.getSex());
                 userJSON.put("photo", user.getPhoto());
+                userJSON.put("token", user.getToken());
                 jsonObject.put("user", userJSON);
             }
         }

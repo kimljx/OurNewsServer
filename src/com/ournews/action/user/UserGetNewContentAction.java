@@ -22,7 +22,7 @@ public class UserGetNewContentAction extends BaseAction {
     public void action() {
         id = request.getParameter("id");
         uid = request.getParameter("uid");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();
@@ -39,7 +39,7 @@ public class UserGetNewContentAction extends BaseAction {
                 if (MyUtils.isNull(uid)) {
                     getNewContent();
                 } else {
-                    int result = newPresenter.userBrowseNew(Long.valueOf(id), Long.valueOf(uid), DateUtil.getNowTime());
+                    int result = newDao.userBrowseNew(Long.valueOf(id), Long.valueOf(uid), DateUtil.getNowTime());
                     if (result != -2) {
                         getNewContent();
                     } else {
@@ -58,7 +58,7 @@ public class UserGetNewContentAction extends BaseAction {
     }
 
     private void getNewContent() {
-        New n = newPresenter.getNewContent(Long.valueOf(id));
+        New n = newDao.getNewContent(Long.valueOf(id));
         if (n != null) {
             JSONObject newJSON = new JSONObject();
             newJSON.put("id", id);

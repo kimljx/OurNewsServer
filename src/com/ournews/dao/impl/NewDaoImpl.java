@@ -110,9 +110,10 @@ public class NewDaoImpl implements NewDao {
                                 news.add(new1);
                             }
                         }
+                        SQLManager.closeResultSet(resultSet);
                     }
-                    System.out.println(type);
                     newTitles.put(type, news);
+                    SQLManager.closePreparedStatement(preparedStatement);
                 }
                 preparedStatement = connection.prepareStatement(sql + "type = \" 6 \" ORDER BY id DESC limit 0,4");
                 resultSet = preparedStatement.executeQuery();

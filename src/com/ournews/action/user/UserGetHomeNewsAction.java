@@ -22,7 +22,7 @@ public class UserGetHomeNewsAction extends BaseAction {
     @Override
     public void action() {
         selectType = request.getParameter("type");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();
@@ -35,7 +35,7 @@ public class UserGetHomeNewsAction extends BaseAction {
     @Override
     public void createJSON() {
         if (MyUtils.isNumber(selectType, 1, 6)) {
-            Map<Integer, List<New>> newMap = newPresenter.getHomeNews(selectType);
+            Map<Integer, List<New>> newMap = newDao.getHomeNews(selectType);
             int type = Integer.valueOf(selectType);
             JSONArray jsonArray = new JSONArray();
             List<New> aNews = newMap.get(type);
@@ -52,7 +52,7 @@ public class UserGetHomeNewsAction extends BaseAction {
             jsonObject.put(type, jsonArray);
             setResult(true);
         } else if (MyUtils.isNull(selectType)) {
-            Map<Integer, List<New>> newMap = newPresenter.getHomeNews(null);
+            Map<Integer, List<New>> newMap = newDao.getHomeNews(null);
             for (int i = 1; i < 7; i++) {
                 JSONArray jsonArray = new JSONArray();
                 List<New> aNews = newMap.get(i);

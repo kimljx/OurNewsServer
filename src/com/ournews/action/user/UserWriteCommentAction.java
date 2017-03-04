@@ -23,7 +23,7 @@ public class UserWriteCommentAction extends BaseAction {
         nId = request.getParameter("nid");
         content = request.getParameter("content");
         createTime = request.getParameter("createtime");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();
@@ -36,7 +36,7 @@ public class UserWriteCommentAction extends BaseAction {
     @Override
     public void createJSON() {
         if (MyUtils.isNumber(uId) && MyUtils.isNumber(nId) && !MyUtils.isNull(content) && content.length() <= 200 && !MyUtils.isNull(createTime)) {
-            int result = newPresenter.writeComment(Long.valueOf(uId), Long.valueOf(nId), content, createTime);
+            int result = newDao.writeComment(Long.valueOf(uId), Long.valueOf(nId), content, createTime);
             if (result == -1) {
                 setResult(false);
                 setErrorCode(Constant.SERVER_ERROR);

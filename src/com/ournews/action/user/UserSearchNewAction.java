@@ -27,7 +27,7 @@ public class UserSearchNewAction extends BaseAction {
         page = request.getParameter("page");
         size = request.getParameter("size");
         sort = request.getParameter("sort");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();
@@ -44,7 +44,7 @@ public class UserSearchNewAction extends BaseAction {
                 sort = "1";
             if (Integer.valueOf(size) > 20)
                 size = "20";
-            List<New> news = newPresenter.searchNew(name, Integer.valueOf(page), Integer.valueOf(size), Integer.valueOf(sort));
+            List<New> news = newDao.searchNew(name, Integer.valueOf(page), Integer.valueOf(size), Integer.valueOf(sort));
             if (news != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (New n : news) {

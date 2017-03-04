@@ -28,7 +28,7 @@ public class UserGetNewCommentAction extends BaseAction {
         page = request.getParameter("page");
         size = request.getParameter("size");
         sort = request.getParameter("sort");
-        newPresenter = new NewDaoImpl();
+        newDao = new NewDaoImpl();
 
         try {
             createJSON();
@@ -45,7 +45,7 @@ public class UserGetNewCommentAction extends BaseAction {
                 sort = "1";
             if (Integer.valueOf(size) > 20)
                 size = "20";
-            List<Comment> comments = newPresenter.getComment(Long.valueOf(nId), Integer.valueOf(page), Integer.valueOf(size), Integer.valueOf(sort));
+            List<Comment> comments = newDao.getComment(Long.valueOf(nId), Integer.valueOf(page), Integer.valueOf(size), Integer.valueOf(sort));
             if (comments != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (Comment comment : comments) {

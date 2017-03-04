@@ -8,7 +8,7 @@ import com.ournews.bean.User;
 public interface UserDao {
     boolean register(String loginName, String password);
 
-    User login(String loginName, String password);
+    User login(String loginName, String password, String time);
 
     boolean changeInfo(String id, String nickName, String sex, String photo);
 }

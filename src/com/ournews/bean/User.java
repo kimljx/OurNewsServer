@@ -7,6 +7,7 @@ public class User {
     private String nickName;
     private int sex = 0;
     private String photo = "NoImage";
+    private String token;
 
     public long getId() {
         return id;
@@ -54,5 +55,13 @@ public class User {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

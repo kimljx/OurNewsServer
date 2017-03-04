@@ -10,9 +10,10 @@ import java.util.Map;
  * Created by Misutesu on 2017/1/16 0016.
  */
 public interface NewDao {
+
     boolean addNews(String title, String cover, String abstractContent, String content, String createTime, String type);
 
-    Map<Integer, List<New>> getHomeNews(String selectType);
+    Map<Integer,List<New>> getHomeNews(String selectType);
 
     List<New> getNewList(int type, int page, int size, int sort);
 

@@ -19,7 +19,7 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
     protected HttpServletResponse response;
     protected JSONObject jsonObject = new JSONObject();
     protected UserDao userDao;
-    protected NewDao newPresenter;
+    protected NewDao newDao;
 
     @Override
     public void setServletRequest(HttpServletRequest httpServletRequest) {
