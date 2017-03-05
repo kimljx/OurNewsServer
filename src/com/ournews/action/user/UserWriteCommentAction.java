@@ -1,9 +1,7 @@
 package com.ournews.action.user;
 
 import com.ournews.action.base.BaseAction;
-import com.ournews.dao.impl.NewDaoImpl;
-import com.ournews.utils.Constant;
-import com.ournews.utils.MyUtils;
+import com.ournews.service.impl.NewServiceImpl;
 
 import java.io.IOException;
 
@@ -12,43 +10,19 @@ import java.io.IOException;
  */
 public class UserWriteCommentAction extends BaseAction {
 
-    private String uId;
-    private String nId;
-    private String content;
-    private String createTime;
-
     @Override
-    public void action() {
-        uId = request.getParameter("uid");
-        nId = request.getParameter("nid");
-        content = request.getParameter("content");
-        createTime = request.getParameter("createtime");
-        newDao = new NewDaoImpl();
+    public void action() throws IOException {
+        String uid = request.getParameter("uid");
+        String nid = request.getParameter("nid");
+        String content = request.getParameter("content");
+        String time = request.getParameter("time");
+        String key = request.getParameter("key");
+        System.out.println(uid);
+        System.out.println(nid);
+        System.out.println(content);
+        System.out.println(time);
+        System.out.println(key);
 
-        try {
-            createJSON();
-            sendJSON();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void createJSON() {
-        if (MyUtils.isNumber(uId) && MyUtils.isNumber(nId) && !MyUtils.isNull(content) && content.length() <= 200 && !MyUtils.isNull(createTime)) {
-            int result = newDao.writeComment(Long.valueOf(uId), Long.valueOf(nId), content, createTime);
-            if (result == -1) {
-                setResult(false);
-                setErrorCode(Constant.SERVER_ERROR);
-            } else if (result == 0) {
-                setResult(false);
-                setErrorCode(Constant.USER_OR_NEW_NO_HAVE);
-            } else {
-                setResult(true);
-            }
-        } else {
-            setResult(false);
-            setErrorCode(Constant.VALUES_ERROR);
-        }
+        sendJSON(new NewServiceImpl().writeComment(uid, nid, content, time, key));
     }
 }

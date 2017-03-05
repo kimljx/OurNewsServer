@@ -1,31 +1,25 @@
 package com.ournews.dao;
 
-import com.ournews.bean.Comment;
-import com.ournews.bean.New;
-
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by Misutesu on 2017/1/16 0016.
  */
 public interface NewDao {
 
-    boolean addNews(String title, String cover, String abstractContent, String content, String createTime, String type);
+    String addNews(String title, String cover, String abstractContent, String content, String type);
 
-    Map<Integer,List<New>> getHomeNews(String selectType);
+    String getHomeNews(String selectType);
 
-    List<New> getNewList(int type, int page, int size, int sort);
+    String getNewList(String type, String page, String size, String sort);
 
-    List<New> searchNew(String name, int page, int size, int sort);
+    String getSearchNew(String name, String page, String size, String sort);
 
-    int userBrowseNew(long nid, long uid, String time);
+    String getNewContentUser(String uid, String nid);
 
-    New getNewContent(long id);
+    String getNewContent(String id);
 
-    int collectNew(long uid, long nid, int type);
+    String collectNew(String uid, String nid, String type);
 
-    int writeComment(long uId, long nId, String content, String createTime);
+    String writeComment(String uId, String nId, String content);
 
-    List<Comment> getComment(long nid, int page, int size, int sort);
+    String getComment(String nid, String page, String size, String sort);
 }

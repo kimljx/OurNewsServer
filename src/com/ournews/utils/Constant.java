@@ -16,26 +16,34 @@ public class Constant {
 
     public static final String POST_SUCCESS = "success";
 
+    // 服务器错误
+    public static final String SERVER_ERROR = "100";
     // 所传参数有误
     public static final String VALUES_ERROR = "101";
     // 连接超时
     public static final String CONNECT_TIME_OUT = "102";
-    // 用户名或密码长度不正确
-    public static final String NAME_OR_PASSWORD_LENGTH_ERROR = "1001";
+    // KEY错误
+    public static final String KEY_ERROR = "103";
+    // 用户名长度不正确
+    public static final String LOGIN_NAME_LENGTH_ERROR = "1001";
+    // 密码长度不正确
+    public static final String PASSWORD_LENGTH_ERROR = "1002";
     // 用户名已存在
     public static final String LOGIN_NAME_IS_EXIST = "1002";
-    // 用户名不存在或密码错误
-    public static final String LOGIN_NAME_NO_EXIST_OR_PASSWORD_ERROR = "2001";
+    // 用户名不存在
+    public static final String LOGIN_NAME_NO_EXIST = "2001";
+    // 密码错误
+    public static final String PASSWORD_ERROR = "2002";
     // 修改用户信息错误或用户不存在
     public static final String CHANGE_INFO_ERROR = "3001";
-    // 服务器错误
-    public static final String SERVER_ERROR = "4001";
+    // token错误
+    public static final String TOKEN_ERROR = "3002";
     // 用户不存在(ID)
-    public static final String USER_NO_HAVE = "5001";
-    // 用户或新闻不存在(ID)
-    public static final String USER_OR_NEW_NO_HAVE = "6001";
+    public static final String USER_NO_EXIST = "5001";
     // 新闻不存在(ID)
-    public static final String NEW_NO_HAVE = "7001";
+    public static final String NEW_NO_EXIST = "7001";
+    // 新闻不存在(ID)
+    public static final String NEW_NO_ONLINE = "8001";
 
     // 新增新闻失败
     public static final String ADD_NEWS_ERROR = "10001";

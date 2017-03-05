@@ -1,9 +1,6 @@
 package com.ournews.action.base;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.ournews.dao.NewDao;
-import com.ournews.dao.UserDao;
-import net.sf.json.JSONObject;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
@@ -17,9 +14,6 @@ import java.io.IOException;
 public abstract class BaseAction extends ActionSupport implements ServletRequestAware, ServletResponseAware {
     protected HttpServletRequest request;
     protected HttpServletResponse response;
-    protected JSONObject jsonObject = new JSONObject();
-    protected UserDao userDao;
-    protected NewDao newDao;
 
     @Override
     public void setServletRequest(HttpServletRequest httpServletRequest) {
@@ -31,31 +25,15 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
         response = httpServletResponse;
     }
 
-    public abstract void action();
+    public abstract void action() throws IOException;
 
-    public abstract void createJSON();
-
-    public void setResult(boolean result) {
-        if (result) {
-            jsonObject.put("result", "success");
-        } else {
-            jsonObject.put("result", "error");
-        }
-    }
-
-    public void setErrorCode(String errorCode) {
-        jsonObject.put("error_code", errorCode);
-    }
-
-    public void sendJSON() throws IOException {
-        if (response != null) {
+    public void sendJSON(String result) throws IOException {
 //            response.setContentType("text/html;charset=utf-8");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.getOutputStream().write(jsonObject.toString().getBytes("UTF-8"));
-            response.getOutputStream().flush();
-            response.getOutputStream().close();
-        }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.getOutputStream().write(result.getBytes("UTF-8"));
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
     }
 }

@@ -32,7 +32,12 @@ public class FileUploadAction extends BaseAction {
     }
 
     @Override
-    public void action() {
+    public void action() throws IOException {
+        sendJSON(getJSON().toString());
+    }
+
+    public JSONObject getJSON() {
+        JSONObject jsonObject;
         InputStream in = null;
         OutputStream out = null;
         try {
@@ -40,15 +45,17 @@ public class FileUploadAction extends BaseAction {
             for (int i = 0; i < upload.length; i++) {
                 if (!uploadContentType[i].startsWith("image/")) {
                     jsonObject = new JSONObject();
-                    setResult(false);
-                    setErrorCode(Constant.UPLOAD_NO_IMAGE);
-                    return;
+                    jsonObject.put("result", "error");
+                    jsonObject.put("error_code", Constant.UPLOAD_NO_IMAGE);
+                    jsonObject.put("data", "");
+                    return jsonObject;
                 } else {
                     if (upload[i].length() > 5 * 1024 * 1024) {
                         jsonObject = new JSONObject();
-                        setResult(false);
-                        setErrorCode(Constant.UPLOAD_FILE_TOO_BIG);
-                        return;
+                        jsonObject.put("result", "error");
+                        jsonObject.put("error_code", Constant.UPLOAD_FILE_TOO_BIG);
+                        jsonObject.put("data", "");
+                        return jsonObject;
                     } else {
                         String path = ServletActionContext.getServletContext().getRealPath(File.separator + "upload");
                         File file = new File(path);
@@ -64,16 +71,22 @@ public class FileUploadAction extends BaseAction {
                         while ((len = in.read(by)) > 0) {
                             out.write(by, 0, len);
                         }
-                        setResult(true);
                         jsonArray.add(fileName);
                     }
                 }
             }
-            jsonObject.put("image_list", jsonArray);
+            jsonObject = new JSONObject();
+            jsonObject.put("data", jsonArray);
+            jsonObject.put("result", "success");
+            jsonObject.put("error_code", "0");
+            return jsonObject;
         } catch (IOException e) {
             e.printStackTrace();
-            setResult(false);
-            setErrorCode(Constant.SERVER_ERROR);
+            jsonObject = new JSONObject();
+            jsonObject.put("result", "error");
+            jsonObject.put("error_code", Constant.SERVER_ERROR);
+            jsonObject.put("data", "");
+            return jsonObject;
         } finally {
             try {
                 if (in != null)
@@ -82,15 +95,9 @@ public class FileUploadAction extends BaseAction {
                     out.flush();
                     out.close();
                 }
-                sendJSON();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void createJSON() {
-
     }
 }

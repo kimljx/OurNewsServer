@@ -30,6 +30,12 @@ public class MyUtils {
         return false;
     }
 
+    public static boolean isToken(String str) {
+        if (str != null && str.length() == 32)
+            return true;
+        return false;
+    }
+
     public static boolean isNumber(String str) {
         if (isNull(str))
             return false;
@@ -75,6 +81,10 @@ public class MyUtils {
         if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".bmp"))
             return true;
         return false;
+    }
+
+    public static boolean isConnectTimeOut(long time) {
+        return (System.currentTimeMillis() - time) > Constant.CONNECT_OUT_TIME;
     }
 
     public static void zipImage(File file) throws IOException {
