@@ -17,11 +17,6 @@ public class UserWriteCommentAction extends BaseAction {
         String content = request.getParameter("content");
         String time = request.getParameter("time");
         String key = request.getParameter("key");
-        System.out.println(uid);
-        System.out.println(nid);
-        System.out.println(content);
-        System.out.println(time);
-        System.out.println(key);
 
         sendJSON(new NewServiceImpl().writeComment(uid, nid, content, time, key));
     }

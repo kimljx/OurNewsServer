@@ -29,7 +29,7 @@ public class Constant {
     // 密码长度不正确
     public static final String PASSWORD_LENGTH_ERROR = "1002";
     // 用户名已存在
-    public static final String LOGIN_NAME_IS_EXIST = "1002";
+    public static final String LOGIN_NAME_IS_EXIST = "1003";
     // 用户名不存在
     public static final String LOGIN_NAME_NO_EXIST = "2001";
     // 密码错误
@@ -42,7 +42,7 @@ public class Constant {
     public static final String USER_NO_EXIST = "5001";
     // 新闻不存在(ID)
     public static final String NEW_NO_EXIST = "7001";
-    // 新闻不存在(ID)
+    // 新闻未上线
     public static final String NEW_NO_ONLINE = "8001";
 
     // 新增新闻失败

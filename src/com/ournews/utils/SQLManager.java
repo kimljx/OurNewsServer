@@ -8,15 +8,15 @@ import java.sql.SQLException;
 
 public class SQLManager {
 
-//    private static final String USER = "root";
-//    private static final String PASSWORD = "8189252.";
-//    private static final String URL = "jdbc:mariadb://localhost:3306/OurNews";
-//    private static final String DRIVER_CLASS_NAME = "org.mariadb.jdbc.Driver";
-
     private static final String USER = "root";
-    private static final String PASSWORD = "qq8189252.";
-    private static final String URL = "jdbc:mysql://localhost:3306/ournews?useUnicode=true&characterEncoding=utf-8&useSSL=false";
-    private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+    private static final String PASSWORD = "8189252.";
+    private static final String URL = "jdbc:mariadb://localhost:3306/OurNews";
+    private static final String DRIVER_CLASS_NAME = "org.mariadb.jdbc.Driver";
+
+//    private static final String USER = "root";
+//    private static final String PASSWORD = "qq8189252.";
+//    private static final String URL = "jdbc:mysql://localhost:3306/ournews?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+//    private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName(DRIVER_CLASS_NAME);
