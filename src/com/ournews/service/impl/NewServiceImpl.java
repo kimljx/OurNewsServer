@@ -79,6 +79,29 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
+    public String collectionNew(String nid, String token, String uid, String type) {
+        if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(uid) || MyUtils.isNull(nid) || !MyUtils.isNumber(type, 0, 1)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        } else {
+            return new NewDaoImpl().collectNew(uid, token, nid, type);
+        }
+    }
+
+    @Override
+    public String getCollections(String uid, String token, String page, String size, String sort) {
+        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        if (!MyUtils.isNumber(sort, 1, 2))
+            sort = "1";
+        if (Integer.valueOf(page) < 1)
+            page = "1";
+        if (Integer.valueOf(size) > 20)
+            size = "20";
+        return new NewDaoImpl().getCollections(uid, token, page, size, sort);
+    }
+
+    @Override
     public String writeComment(String uid, String nid, String content, String time, String key) {
         if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid) || MyUtils.isNull(content)
                 || !MyUtils.isNumber(time) || MyUtils.isNull(key)) {

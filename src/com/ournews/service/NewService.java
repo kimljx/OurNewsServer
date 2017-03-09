@@ -14,6 +14,10 @@ public interface NewService {
 
     String getContent(String uid, String nid);
 
+    String collectionNew(String nid, String token, String uid, String type);
+
+    String getCollections(String uid, String token, String page, String size, String sort);
+
     String writeComment(String uid, String nid, String content, String time, String key);
 
     String getComment(String nid, String page, String size, String sort);

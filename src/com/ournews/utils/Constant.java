@@ -44,6 +44,10 @@ public class Constant {
     public static final String NEW_NO_EXIST = "7001";
     // 新闻未上线
     public static final String NEW_NO_ONLINE = "8001";
+    // 已有收藏
+    public static final String HAS_COLLECTION = "9001";
+    // 没收藏过
+    public static final String NO_COLLECTION = "9002";
 
     // 新增新闻失败
     public static final String ADD_NEWS_ERROR = "10001";

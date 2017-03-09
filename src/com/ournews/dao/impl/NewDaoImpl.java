@@ -391,26 +391,109 @@ public class NewDaoImpl implements NewDao {
     }
 
     @Override
-    public String collectNew(String uid, String nid, String type) {
+    public String collectNew(String uid, String token, String nid, String type) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String sql = "REPLACE INTO collection ( uid , nid ) VALUES ( ? ,? ) ";
+        ResultSet resultSet = null;
+        String sql = "SELECT count(*),token FROM user WHERE id = \"" + uid + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, uid);
-            preparedStatement.setString(2, nid);
-            if (preparedStatement.executeUpdate() == 1) {
-                return ResultUtil.getSuccessJSON("").toString();
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(0) != 0) {
+                        if (token.equals(resultSet.getString(1))) {
+                            SQLManager.closeResultSet(resultSet);
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            sql = "SELECT count(*),state FROM news WHERE id = \"" + nid + "\"";
+                            preparedStatement = connection.prepareStatement(sql);
+                            resultSet = preparedStatement.executeQuery();
+                            if (resultSet != null) {
+                                if (resultSet.next()) {
+                                    if (resultSet.getInt(1) != 0) {
+                                        if (resultSet.getInt(1) == 1) {
+                                            SQLManager.closeResultSet(resultSet);
+                                            SQLManager.closePreparedStatement(preparedStatement);
+                                            if (Integer.valueOf(type) == 0) {
+                                                sql = "INSERT INTO collection ( uid , nid ) VALUES ( ? , ? )";
+                                                preparedStatement = connection.prepareStatement(sql);
+                                                preparedStatement.setString(1, uid);
+                                                preparedStatement.setString(2, nid);
+                                                if (preparedStatement.executeUpdate() == 1) {
+                                                    return ResultUtil.getSuccessJSON("").toString();
+                                                } else {
+                                                    return ResultUtil.getErrorJSON(Constant.HAS_COLLECTION).toString();
+                                                }
+                                            } else {
+                                                sql = "DELETE FROM collection WHERE uid = \"" + uid + "\" AND nid = \"" + nid + "\"";
+                                                preparedStatement = connection.prepareStatement(sql);
+                                                if (preparedStatement.executeUpdate() == 1) {
+                                                    return ResultUtil.getSuccessJSON("").toString();
+                                                } else {
+                                                    return ResultUtil.getErrorJSON(Constant.NO_COLLECTION).toString();
+                                                }
+                                            }
+                                        }
+                                        return ResultUtil.getErrorJSON(Constant.NEW_NO_ONLINE).toString();
+                                    }
+                                    return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
+                                }
+                            }
+                            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                        }
+                        return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } finally {
+            SQLManager.closeResultSet(resultSet);
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
         }
+    }
+
+    @Override
+    public String getCollections(String uid, String token, String page, String size, String sort) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT news.id,news.title,news.cover,news.abstract,news.createtime,news.type FROM news,collection WHERE collection.uid = \"" + uid + "\" AND collection.nid = news.id AND news.state = \"1\"";
+        if (sort.equals("1"))
+            sql = sql + " ORDER BY comment.id DESC";
+        sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                JSONArray jsonArray = new JSONArray();
+                while (resultSet.next()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", resultSet.getLong(1));
+                    jsonObject.put("title", resultSet.getString(2));
+                    jsonObject.put("cover", resultSet.getString(3));
+                    jsonObject.put("abstract", resultSet.getString(4));
+                    jsonObject.put("create_time", DateUtil.getTime(resultSet.getLong(5)));
+                    jsonObject.put("type", resultSet.getInt(6));
+                    jsonArray.add(jsonObject);
+                }
+                return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+        return null;
     }
 
     @Override
@@ -472,7 +555,7 @@ public class NewDaoImpl implements NewDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String sql = "SELECT comment.id,comment.content,comment.createtime,user.id,user.nickname,user.sex,user.photo FROM comment,user WHERE comment.nid = \""
-                + nid + "\" AND comment.uid = user.id AND state = 1";
+                + nid + "\" AND comment.uid = user.id AND user.state = 1 AND comment.state = 1";
         if (sort.equals("1"))
             sql = sql + " ORDER BY comment.id DESC";
         sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
@@ -497,8 +580,9 @@ public class NewDaoImpl implements NewDao {
                     jsonObject.put("user", userJSON);
                     jsonArray.add(jsonObject);
                 }
+                return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
             }
-            return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();

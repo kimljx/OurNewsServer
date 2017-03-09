@@ -58,6 +58,9 @@
         <action name="collectNew" method="action" class="com.ournews.action.user.UserCollectNewAction">
             <result type="json"/>
         </action>
+        <action name="getCollections" method="action" class="com.ournews.action.user.UserGetCollectionNewsAction">
+            <result type="json"/>
+        </action>
         <action name="sendComment" method="action" class="com.ournews.action.user.UserWriteCommentAction">
             <result type="json"/>
         </action>

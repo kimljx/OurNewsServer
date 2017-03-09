@@ -1,20 +1,22 @@
 package com.ournews.action.user;
 
 import com.ournews.action.base.BaseAction;
+import com.ournews.service.impl.NewServiceImpl;
+
+import java.io.IOException;
 
 /**
  * Created by Misutesu on 2017/1/24 0024.
  */
 public class UserCollectNewAction extends BaseAction {
 
-    private String id;
-    private String uid;
-    private String type;
-
     @Override
-    public void action() {
-        id = request.getParameter("id");
-        uid = request.getParameter("uid");
-        type = request.getParameter("type");
+    public void action() throws IOException {
+        String nid = request.getParameter("nid");
+        String uid = request.getParameter("uid");
+        String token = request.getParameter("token");
+        String type = request.getParameter("type");
+
+        sendJSON(new NewServiceImpl().collectionNew(nid, uid, token, type));
     }
 }
