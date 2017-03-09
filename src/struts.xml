@@ -61,6 +61,9 @@
         <action name="getCollections" method="action" class="com.ournews.action.user.UserGetCollectionNewsAction">
             <result type="json"/>
         </action>
+        <action name="getHistory" method="action" class="com.ournews.action.user.UserGetHistoryNewsAction">
+            <result type="json"/>
+        </action>
         <action name="sendComment" method="action" class="com.ournews.action.user.UserWriteCommentAction">
             <result type="json"/>
         </action>

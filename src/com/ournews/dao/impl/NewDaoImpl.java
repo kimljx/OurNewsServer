@@ -465,7 +465,7 @@ public class NewDaoImpl implements NewDao {
         ResultSet resultSet = null;
         String sql = "SELECT news.id,news.title,news.cover,news.abstract,news.createtime,news.type FROM news,collection WHERE collection.uid = \"" + uid + "\" AND collection.nid = news.id AND news.state = \"1\"";
         if (sort.equals("1"))
-            sql = sql + " ORDER BY comment.id DESC";
+            sql = sql + " ORDER BY collection.id DESC";
         sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
         try {
             connection = SQLManager.getConnection();
@@ -485,6 +485,7 @@ public class NewDaoImpl implements NewDao {
                 }
                 return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
             }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
@@ -493,7 +494,44 @@ public class NewDaoImpl implements NewDao {
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
         }
-        return null;
+    }
+
+    @Override
+    public String getHistory(String uid, String token, String page, String size, String sort) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT news.id,news.title,news.cover,news.abstract,news.createtime,news.type FROM news,history WHERE history.uid = \"" + uid + "\" AND history.nid = news.id AND news.state = \"1\"";
+        if (sort.equals("1"))
+            sql = sql + " ORDER BY history.id DESC";
+        sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                JSONArray jsonArray = new JSONArray();
+                while (resultSet.next()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", resultSet.getLong(1));
+                    jsonObject.put("title", resultSet.getString(2));
+                    jsonObject.put("cover", resultSet.getString(3));
+                    jsonObject.put("abstract", resultSet.getString(4));
+                    jsonObject.put("create_time", DateUtil.getTime(resultSet.getLong(5)));
+                    jsonObject.put("type", resultSet.getInt(6));
+                    jsonArray.add(jsonObject);
+                }
+                return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
     }
 
     @Override

@@ -18,6 +18,8 @@ public interface NewService {
 
     String getCollections(String uid, String token, String page, String size, String sort);
 
+    String getHistory(String uid, String token, String page, String size, String sort);
+
     String writeComment(String uid, String nid, String content, String time, String key);
 
     String getComment(String nid, String page, String size, String sort);

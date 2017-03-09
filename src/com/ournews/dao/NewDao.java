@@ -21,6 +21,8 @@ public interface NewDao {
 
     String getCollections(String uid, String token, String page, String size, String sort);
 
+    String getHistory(String uid, String token, String page, String size, String sort);
+
     String writeComment(String uId, String nId, String content);
 
     String getComment(String nid, String page, String size, String sort);

@@ -6,10 +6,9 @@ import com.ournews.service.impl.NewServiceImpl;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2017/3/9.
+ * Created by Misutesu on 2017/3/9 0009.
  */
-public class UserGetCollectionNewsAction extends BaseAction {
-
+public class UserGetHistoryNewsAction extends BaseAction {
     @Override
     public void action() throws IOException {
         String id = request.getParameter("id");
@@ -18,6 +17,6 @@ public class UserGetCollectionNewsAction extends BaseAction {
         String size = request.getParameter("size");
         String sort = request.getParameter("sort");
 
-        sendJSON(new NewServiceImpl().getCollections(id, token, page, size, sort));
+        sendJSON(new NewServiceImpl().getHistory(id, token, page, size, sort));
     }
 }
