@@ -17,11 +17,11 @@ public interface NewDao {
 
     String getNewContent(String id);
 
-    String collectNew(String uid, String token, String nid, String type);
+    String collectNew(String nid, String uid, String token, String type);
 
-    String getCollections(String uid, String token, String page, String size, String sort);
+    String getCollections(String id, String token, String uid, String page, String size, String sort);
 
-    String getHistory(String uid, String token, String page, String size, String sort);
+    String getHistory(String id, String token, String uid, String page, String size, String sort);
 
     String writeComment(String uId, String nId, String content);
 

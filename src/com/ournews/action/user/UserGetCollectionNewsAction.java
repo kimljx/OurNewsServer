@@ -14,10 +14,11 @@ public class UserGetCollectionNewsAction extends BaseAction {
     public void action() throws IOException {
         String id = request.getParameter("id");
         String token = request.getParameter("token");
+        String uid = request.getParameter("uid");
         String page = request.getParameter("page");
         String size = request.getParameter("size");
         String sort = request.getParameter("sort");
 
-        sendJSON(new NewServiceImpl().getCollections(id, token, page, size, sort));
+        sendJSON(new NewServiceImpl().getCollections(id, token, uid, page, size, sort));
     }
 }

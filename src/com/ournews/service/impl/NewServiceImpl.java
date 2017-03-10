@@ -79,17 +79,17 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
-    public String collectionNew(String nid, String token, String uid, String type) {
-        if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(uid) || MyUtils.isNull(nid) || !MyUtils.isNumber(type, 0, 1)) {
+    public String collectionNew(String nid, String uid, String token, String type) {
+        if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(type, 0, 1)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else {
-            return new NewDaoImpl().collectNew(uid, token, nid, type);
+            return new NewDaoImpl().collectNew(nid, uid, token, type);
         }
     }
 
     @Override
-    public String getCollections(String uid, String token, String page, String size, String sort) {
-        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+    public String getCollections(String id, String token, String uid, String page, String size, String sort) {
+        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
         if (!MyUtils.isNumber(sort, 1, 2))
@@ -98,12 +98,12 @@ public class NewServiceImpl implements NewService {
             page = "1";
         if (Integer.valueOf(size) > 20)
             size = "20";
-        return new NewDaoImpl().getCollections(uid, token, page, size, sort);
+        return new NewDaoImpl().getCollections(uid, token, uid, page, size, sort);
     }
 
     @Override
-    public String getHistory(String uid, String token, String page, String size, String sort) {
-        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+    public String getHistory(String id, String token, String uid, String page, String size, String sort) {
+        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
         if (!MyUtils.isNumber(sort, 1, 2))
@@ -112,7 +112,7 @@ public class NewServiceImpl implements NewService {
             page = "1";
         if (Integer.valueOf(size) > 20)
             size = "20";
-        return new NewDaoImpl().getHistory(uid, token, page, size, sort);
+        return new NewDaoImpl().getHistory(uid, token, uid, page, size, sort);
     }
 
     @Override

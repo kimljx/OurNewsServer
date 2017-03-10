@@ -14,11 +14,11 @@ public interface NewService {
 
     String getContent(String uid, String nid);
 
-    String collectionNew(String nid, String token, String uid, String type);
+    String collectionNew(String nid, String uid, String token, String type);
 
-    String getCollections(String uid, String token, String page, String size, String sort);
+    String getCollections(String id, String token, String uid, String page, String size, String sort);
 
-    String getHistory(String uid, String token, String page, String size, String sort);
+    String getHistory(String id, String token, String uid, String page, String size, String sort);
 
     String writeComment(String uid, String nid, String content, String time, String key);
 
