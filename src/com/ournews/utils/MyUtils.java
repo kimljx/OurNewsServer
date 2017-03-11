@@ -36,6 +36,12 @@ public class MyUtils {
         return false;
     }
 
+    public static boolean isTime(String time) {
+        if (!isNumber(time))
+            return false;
+        return Long.valueOf(time) < System.currentTimeMillis();
+    }
+
     public static boolean isNumber(String str) {
         if (isNull(str))
             return false;

@@ -76,5 +76,8 @@
         <action name="addNews" method="action" class="com.ournews.action.manager.ManagerAddNewsAction">
             <result type="json"/>
         </action>
+        <action name="pushNew" method="action" class="com.ournews.action.manager.ManagerPushNewToAllAction">
+            <result type="json"/>
+        </action>
     </package>
 </struts>

@@ -118,7 +118,7 @@ public class NewServiceImpl implements NewService {
     @Override
     public String writeComment(String uid, String nid, String content, String time, String key) {
         if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid) || MyUtils.isNull(content)
-                || !MyUtils.isNumber(time) || MyUtils.isNull(key)) {
+                || !MyUtils.isTime(time) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();

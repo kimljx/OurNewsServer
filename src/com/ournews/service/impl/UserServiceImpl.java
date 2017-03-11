@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(String loginName, String password, String time) {
-        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time)) {
+        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_LENGTH_ERROR).toString();

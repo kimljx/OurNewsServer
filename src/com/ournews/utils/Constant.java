@@ -49,11 +49,14 @@ public class Constant {
     // 没收藏过
     public static final String NO_COLLECTION = "9002";
 
-    // 新增新闻失败
-    public static final String ADD_NEWS_ERROR = "10001";
-
     // 上传文件不是图片
     public static final String UPLOAD_NO_IMAGE = "100001";
     // 上传文件过大
     public static final String UPLOAD_FILE_TOO_BIG = "100002";
+
+
+    // 新增新闻失败
+    public static final String ADD_NEWS_ERROR = "10001";
+    // 连接友盟服务器失败
+    public static final String UMENG_INTERNET_ERROR = "10002";
 }
