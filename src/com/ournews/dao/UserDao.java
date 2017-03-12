@@ -6,7 +6,9 @@ package com.ournews.dao;
 public interface UserDao {
     String register(String loginName, String password);
 
-    String login(String loginName, String password, String time);
+    String login(String loginName, String password, String time, String umengToken);
+
+    String checkLogin(String id, String umengToken);
 
     int tokenIsTrue(String id, String token);
 

@@ -38,8 +38,12 @@ public class Constant {
     public static final String CHANGE_INFO_ERROR = "3001";
     // token错误
     public static final String TOKEN_ERROR = "3002";
+    // 用户被封禁
+    public static final String USER_NO_ONLINE = "3003";
     // 用户不存在(ID)
     public static final String USER_NO_EXIST = "5001";
+    // 查找用户不存在(ID)
+    public static final String OTHER_USER_NO_EXIST = "5002";
     // 新闻不存在(ID)
     public static final String NEW_NO_EXIST = "7001";
     // 新闻未上线

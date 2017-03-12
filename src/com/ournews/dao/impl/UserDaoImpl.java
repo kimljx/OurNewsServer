@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
     public String register(String loginName, String password) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String sql = "INSERT INTO user ( loginname , password , nickname ) VALUES ( ? , ? , ? )";
+        String sql = "INSERT INTO user ( login_name , password , nick_name ) VALUES ( ? , ? , ? )";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -43,11 +43,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String login(String loginName, String password, String time) {
+    public String login(String loginName, String password, String time, String umengToken) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(*),password,id,nickname,sex,photo FROM user WHERE loginname = \"" + loginName + "\"";
+        String sql = "SELECT count(1),password,id,nick_name,sex,photo,push_state FROM user WHERE login_name = \"" + loginName + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -66,8 +66,10 @@ public class UserDaoImpl implements UserDao {
                             jsonObject.put("photo", resultSet.getString(6));
                             jsonObject.put("login_name", loginName);
                             jsonObject.put("token", token);
+                            jsonObject.put("push_state", resultSet.getInt(7));
 
-                            sql = "UPDATE user SET token =\"" + token + "\" WHERE loginname =\"" + loginName + "\"";
+                            sql = "UPDATE user SET umeng_token = \"" + umengToken + "\" , token = \""
+                                    + token + "\" WHERE login_name =\"" + loginName + "\"";
                             SQLManager.closePreparedStatement(preparedStatement);
                             preparedStatement = connection.prepareStatement(sql);
                             int updateNum = preparedStatement.executeUpdate();
@@ -92,12 +94,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public int tokenIsTrue(String id, String token) {
-        int result = 0;
+    public String checkLogin(String id, String umengToken) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(*) FROM user WHERE id = \"" + id + "\" AND token = \"" + token + "\"";
+        String sql = "SELECT state,login_name,nick_name,sex,photo,push_state FROM user WHERE id = \"" + id + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -105,19 +106,67 @@ public class UserDaoImpl implements UserDao {
             if (resultSet != null) {
                 if (resultSet.next()) {
                     if (resultSet.getInt(1) == 1) {
-                        result = 2;
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("id", id);
+                        jsonObject.put("login_name", resultSet.getString(2));
+                        jsonObject.put("nick_name", resultSet.getString(3));
+                        jsonObject.put("sex", resultSet.getInt(4));
+                        jsonObject.put("photo", resultSet.getString(5));
+                        jsonObject.put("push_state", resultSet.getString(6));
+                        SQLManager.closePreparedStatement(preparedStatement);
+                        SQLManager.closeResultSet(resultSet);
+                        sql = "UPDATE user SET umeng_token = \"" + umengToken + "\" WHERE id = \"" + id + "\"";
+                        preparedStatement = connection.prepareStatement(sql);
+                        if (preparedStatement.executeUpdate() == 1) {
+                            return ResultUtil.getSuccessJSON(jsonObject.toString()).toString();
+                        }
                     }
+                    return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
                 }
             }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            result = 1;
+            return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public int tokenIsTrue(String id, String token) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),state,token FROM user WHERE id = \"" + id + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) == 1) {
+                        if (resultSet.getInt(2) == 1) {
+                            if (!token.equals(resultSet.getString(3)))
+                                return 4;
+                            return 5;
+                        }
+                        return 3;
+                    }
+                    return 2;
+                }
+            }
+            return 1;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return 1;
         } finally {
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
             SQLManager.closeResultSet(resultSet);
         }
-        return result;
     }
 
     @Override
@@ -125,7 +174,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(*),token FROM user WHERE id = \"" + id + "\"";
+        String sql = "SELECT count(1),token FROM user WHERE id = \"" + id + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -139,7 +188,7 @@ public class UserDaoImpl implements UserDao {
                             sql = "UPDATE user SET ";
                             boolean had = false;
                             if (nickName != null) {
-                                sql = sql + "nickname=\"" + nickName + "\"";
+                                sql = sql + "nick_name=\"" + nickName + "\"";
                                 had = true;
                             }
                             if (sex != null) {

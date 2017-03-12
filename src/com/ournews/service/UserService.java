@@ -6,7 +6,9 @@ package com.ournews.service;
 public interface UserService {
     String register(String loginName, String password, String time, String key);
 
-    String login(String loginName, String password, String time);
+    String login(String loginName, String password, String time, String umengToken);
+
+    String checkLogin(String id, String token, String umengToken);
 
     String changeInfo(String id, String token, String nickName, String sex, String photo);
 }

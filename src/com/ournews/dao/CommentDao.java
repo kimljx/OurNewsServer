@@ -1,0 +1,12 @@
+package com.ournews.dao;
+
+/**
+ * Created by Misutesu on 2017/3/11 0011.
+ */
+public interface CommentDao {
+    String writeComment(String uid, String nid, String content);
+
+    String getComment(String nid, String page, String size, String sort);
+
+    String writeChildComment(String uid, String cid, String content);
+}

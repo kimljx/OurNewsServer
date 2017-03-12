@@ -1,7 +1,7 @@
 package com.ournews.action.user;
 
 import com.ournews.action.base.BaseAction;
-import com.ournews.service.impl.NewServiceImpl;
+import com.ournews.service.impl.CommentServiceImpl;
 
 import java.io.IOException;
 
@@ -17,6 +17,6 @@ public class UserGetNewCommentAction extends BaseAction {
         String size = request.getParameter("size");
         String sort = request.getParameter("sort");
 
-        sendJSON(new NewServiceImpl().getComment(nid, page, size, sort));
+        sendJSON(new CommentServiceImpl().getComment(nid, page, size, sort));
     }
 }

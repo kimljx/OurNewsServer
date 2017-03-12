@@ -1,9 +1,9 @@
 package com.ournews.service.impl;
 
 import com.ournews.dao.impl.NewDaoImpl;
+import com.ournews.dao.impl.UserDaoImpl;
 import com.ournews.service.NewService;
 import com.ournews.utils.Constant;
-import com.ournews.utils.MD5Util;
 import com.ournews.utils.MyUtils;
 import com.ournews.utils.ResultUtil;
 
@@ -83,7 +83,17 @@ public class NewServiceImpl implements NewService {
         if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(type, 0, 1)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else {
-            return new NewDaoImpl().collectNew(nid, uid, token, type);
+            int isTrueToken = new UserDaoImpl().tokenIsTrue(uid, token);
+            if (isTrueToken == 1) {
+                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+            } else if (isTrueToken == 2) {
+                return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+            } else if (isTrueToken == 3) {
+                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+            } else if (isTrueToken == 4) {
+                return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+            }
+            return new NewDaoImpl().collectNew(nid, uid, type);
         }
     }
 
@@ -92,13 +102,23 @@ public class NewServiceImpl implements NewService {
         if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
+        int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        }
         if (!MyUtils.isNumber(sort, 1, 2))
             sort = "1";
         if (Integer.valueOf(page) < 1)
             page = "1";
         if (Integer.valueOf(size) > 20)
             size = "20";
-        return new NewDaoImpl().getCollections(uid, token, uid, page, size, sort);
+        return new NewDaoImpl().getCollections(id, uid, page, size, sort);
     }
 
     @Override
@@ -106,32 +126,15 @@ public class NewServiceImpl implements NewService {
         if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
-        if (!MyUtils.isNumber(sort, 1, 2))
-            sort = "1";
-        if (Integer.valueOf(page) < 1)
-            page = "1";
-        if (Integer.valueOf(size) > 20)
-            size = "20";
-        return new NewDaoImpl().getHistory(uid, token, uid, page, size, sort);
-    }
-
-    @Override
-    public String writeComment(String uid, String nid, String content, String time, String key) {
-        if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid) || MyUtils.isNull(content)
-                || !MyUtils.isTime(time) || MyUtils.isNull(key)) {
-            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
-        } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
-            return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
-        } else if (!key.equals(MD5Util.getMD5(Constant.KEY + time))) {
-            return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
-        }
-        return new NewDaoImpl().writeComment(uid, nid, content);
-    }
-
-    @Override
-    public String getComment(String nid, String page, String size, String sort) {
-        if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
-            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
         }
         if (!MyUtils.isNumber(sort, 1, 2))
             sort = "1";
@@ -139,6 +142,6 @@ public class NewServiceImpl implements NewService {
             page = "1";
         if (Integer.valueOf(size) > 20)
             size = "20";
-        return new NewDaoImpl().getComment(nid, page, size, sort);
+        return new NewDaoImpl().getHistory(id, uid, page, size, sort);
     }
 }

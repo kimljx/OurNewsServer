@@ -36,6 +36,12 @@ public class MyUtils {
         return false;
     }
 
+    public static boolean isVarchar(String str) {
+        if (isNull(str))
+            return false;
+        return str.length() <= 50;
+    }
+
     public static boolean isTime(String time) {
         if (!isNumber(time))
             return false;

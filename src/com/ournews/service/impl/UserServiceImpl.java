@@ -11,7 +11,6 @@ import com.ournews.utils.ResultUtil;
  * Created by Misutesu on 2017/3/4 0004.
  */
 public class UserServiceImpl implements UserService {
-
     @Override
     public String register(String loginName, String password, String time, String key) {
         if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time)) {
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String loginName, String password, String time) {
+    public String login(String loginName, String password, String time, String umengToken) {
         if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
@@ -37,7 +36,29 @@ public class UserServiceImpl implements UserService {
         } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         }
-        return new UserDaoImpl().login(loginName, password, time);
+        if (MyUtils.isNull(umengToken))
+            umengToken = "";
+        return new UserDaoImpl().login(loginName, password, time, umengToken);
+    }
+
+    @Override
+    public String checkLogin(String id, String token, String umengToken) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        }
+        if (MyUtils.isNull(umengToken))
+            umengToken = "";
+        return new UserDaoImpl().checkLogin(id, umengToken);
     }
 
     @Override
@@ -48,10 +69,14 @@ public class UserServiceImpl implements UserService {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else {
             int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);
-            if (isTrueToken == 0) {
-                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-            } else if (isTrueToken == 1) {
+            if (isTrueToken == 1) {
                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+            } else if (isTrueToken == 2) {
+                return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+            } else if (isTrueToken == 3) {
+                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+            } else if (isTrueToken == 4) {
+                return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
             }
             if (MyUtils.isNull(nickName))
                 nickName = null;

@@ -34,10 +34,13 @@
     </package>
 
     <package name="UserRequest" extends="json-default">
+        <action name="register" method="action" class="com.ournews.action.user.UserRegisterAction">
+            <result type="json"/>
+        </action>
         <action name="login" method="action" class="com.ournews.action.user.UserLoginAction">
             <result type="json"/>
         </action>
-        <action name="register" method="action" class="com.ournews.action.user.UserRegisterAction">
+        <action name="checkLogin" method="action" class="com.ournews.action.user.UserCheckLoginAction">
             <result type="json"/>
         </action>
         <action name="changeInfo" method="action" class="com.ournews.action.user.UserChangeInfoAction">
@@ -68,6 +71,9 @@
             <result type="json"/>
         </action>
         <action name="getComment" method="action" class="com.ournews.action.user.UserGetNewCommentAction">
+            <result type="json"/>
+        </action>
+        <action name="sendChildComment" method="action" class="com.ournews.action.user.UserWriteChildCommentAction">
             <result type="json"/>
         </action>
     </package>

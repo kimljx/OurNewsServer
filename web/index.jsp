@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>我们的新闻</title>
+    <title>OurNews Server</title>
 </head>
 <body>
-<p>我们的新闻(Test)</p>
+<p>OurNews Server</p>
+<a href="http://www.kancloud.cn/misutesu/ournews/279945">API DOC</a>
 </body>
 </html>

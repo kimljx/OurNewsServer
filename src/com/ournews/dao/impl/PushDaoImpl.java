@@ -18,7 +18,7 @@ public class PushDaoImpl implements PushDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(1),id,title,cover,abstract,createtime,type,state FROM news WHERE id = \"" + nid + "\"";
+        String sql = "SELECT count(1),id,title,cover,abstract,create_time,type,state FROM news WHERE id = \"" + nid + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);

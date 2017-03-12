@@ -6,19 +6,18 @@ import com.ournews.service.impl.CommentServiceImpl;
 import java.io.IOException;
 
 /**
- * Created by Misutesu on 2017/1/16 0016.
+ * Created by Misutesu on 2017/3/11 0011.
  */
-public class UserWriteCommentAction extends BaseAction {
-
+public class UserWriteChildCommentAction extends BaseAction {
     @Override
     public void action() throws IOException {
         String uid = request.getParameter("uid");
-        String nid = request.getParameter("nid");
+        String cid = request.getParameter("cid");
         String content = request.getParameter("content");
         String time = request.getParameter("time");
         String token = request.getParameter("token");
         String key = request.getParameter("key");
 
-        sendJSON(new CommentServiceImpl().writeComment(uid, nid, content, time, token, key));
+        sendJSON(new CommentServiceImpl().writeChildComment(uid, cid, content, time, token, key));
     }
 }
