@@ -8,5 +8,9 @@ public interface CommentDao {
 
     String getComment(String nid, String page, String size, String sort);
 
+    String getCommentUseUid(String uid, String nid, String page, String size, String sort);
+
+    String likeComment(String cid, String uid, String type);
+
     String writeChildComment(String uid, String cid, String content);
 }

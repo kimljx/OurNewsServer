@@ -73,6 +73,9 @@
         <action name="getComment" method="action" class="com.ournews.action.user.UserGetNewCommentAction">
             <result type="json"/>
         </action>
+        <action name="lickComment" method="action" class="com.ournews.action.user.UserLickCommentAction">
+            <result type="json"/>
+        </action>
         <action name="sendChildComment" method="action" class="com.ournews.action.user.UserWriteChildCommentAction">
             <result type="json"/>
         </action>

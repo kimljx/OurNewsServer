@@ -2,68 +2,68 @@ package com.ournews.utils;
 
 import net.sf.json.JSONObject;
 import okhttp3.*;
+import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by Administrator on 2017/3/11.
  */
 public class PushUtil {
 
-    private static final String UMENG_APP_KEY = "58c38c8daed1790c750014a2";
+    private static final String JIGUANG_PUSH_URL = "https://api.jpush.cn/v3/push";
 
-    private static final String UMENG_APP_MASTER_SECRET = "auf6sl4c5u7dvtzysfkot0sjvl8ebnol";
+    private static final String JIGUANG_APP_KEY = "205c085cd3834658de4534b0";
 
-    private static final String UMENG_PUSH_URL = "http://msg.umeng.com/api/send?sign=";
+    private static final String JIGUANG_MASTER_SECRET = "bc10118232a97136c5944dc6";
 
     private PushUtil() {
     }
 
-    public static String pushToAndroid(String title, String text, String content) {
+    public static String pushNewToAll(String title, String text, String content) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("appkey", UMENG_APP_KEY);
-        jsonObject.put("timestamp", System.currentTimeMillis());
-        jsonObject.put("type", "broadcast");
+        jsonObject.put("platform", "all");
+        jsonObject.put("audience", "all");
 
-        JSONObject payloadJSON = new JSONObject();
-        payloadJSON.put("display_type", "notification");
+        JSONObject notifyJSON = new JSONObject();
+        JSONObject androidJSON = new JSONObject();
 
-        JSONObject bodyJSON = new JSONObject();
-        bodyJSON.put("ticker", "OurNews Push");
-        bodyJSON.put("title", title);
-        bodyJSON.put("text", text);
-        bodyJSON.put("play_vibrate", true);
-        bodyJSON.put("play_lights", true);
-        bodyJSON.put("play_sound", true);
-        bodyJSON.put("after_open", "go_activity");
-        bodyJSON.put("activity", "com.team60.ournews.module.ui.activity.FirstActivity");
+        androidJSON.put("alert", text);
+        androidJSON.put("title", title);
 
         JSONObject extraJSON = new JSONObject();
         extraJSON.put("pushContent", content);
 
-        payloadJSON.put("extra", extraJSON);
-        payloadJSON.put("body", bodyJSON);
-        jsonObject.put("payload", payloadJSON);
+        androidJSON.put("extras", extraJSON);
+
+        notifyJSON.put("android", androidJSON);
+
+        jsonObject.put("notification", notifyJSON);
 
         OkHttpClient client = OkHttpUtil.getOkHttpClient();
         RequestBody body = RequestBody.create(MediaType.parse(OkHttpUtil.MEDIA_TYPE), jsonObject.toString());
-        Request request = new Request.Builder().url(UMENG_PUSH_URL + getSign(jsonObject.toString())).post(body).build();
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + getBase64(JIGUANG_APP_KEY + ":" + JIGUANG_MASTER_SECRET))
+                .url(JIGUANG_PUSH_URL)
+                .post(body)
+                .build();
         try {
             Response response = client.newCall(request).execute();
-            JSONObject responseJSON = JSONObject.fromObject(response.body().string());
-            if (responseJSON.getString("ret").equals("SUCCESS")) {
-                return ResultUtil.getSuccessJSON("").toString();
-            } else {
-                return ResultUtil.getErrorJSON(responseJSON.getJSONObject("data").getString("error_code")).toString();
-            }
+            return ResultUtil.getSuccessJSON(JSONObject.fromObject(response.body().string())).toString();
         } catch (IOException e) {
             e.printStackTrace();
-            return ResultUtil.getErrorJSON(Constant.UMENG_INTERNET_ERROR).toString();
+            return ResultUtil.getErrorJSON(Constant.JIGUANG_INTERNET_ERROR).toString();
         }
     }
 
-    private static String getSign(String postBody) {
-        String sign = "POSThttp://msg.umeng.com/api/send" + postBody + UMENG_APP_MASTER_SECRET;
-        return MD5Util.getMD5(sign);
+    public static String getBase64(String str) {
+        try {
+            byte[] b = str.getBytes("utf-8");
+            return new BASE64Encoder().encode(b);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

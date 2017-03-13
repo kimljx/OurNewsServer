@@ -18,7 +18,8 @@ public class OkHttpUtil {
         if (client == null) {
             synchronized (OkHttpUtil.class) {
                 if (client == null) {
-                    client = new OkHttpClient.Builder().build();
+                    client = new OkHttpClient.Builder()
+                            .build();
                 }
             }
         }

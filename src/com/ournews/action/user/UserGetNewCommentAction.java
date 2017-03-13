@@ -12,11 +12,12 @@ public class UserGetNewCommentAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
+        String uid = request.getParameter("uid");
         String nid = request.getParameter("nid");
         String page = request.getParameter("page");
         String size = request.getParameter("size");
         String sort = request.getParameter("sort");
 
-        sendJSON(new CommentServiceImpl().getComment(nid, page, size, sort));
+        sendJSON(new CommentServiceImpl().getComment(uid, nid, page, size, sort));
     }
 }

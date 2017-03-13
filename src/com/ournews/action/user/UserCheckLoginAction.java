@@ -13,8 +13,7 @@ public class UserCheckLoginAction extends BaseAction {
     public void action() throws IOException {
         String id = request.getParameter("id");
         String token = request.getParameter("token");
-        String umengToken = request.getParameter("umeng_token");
 
-        sendJSON(new UserServiceImpl().checkLogin(id, token, umengToken));
+        sendJSON(new UserServiceImpl().checkLogin(id, token));
     }
 }

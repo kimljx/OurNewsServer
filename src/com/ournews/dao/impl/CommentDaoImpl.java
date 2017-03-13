@@ -1,10 +1,7 @@
 package com.ournews.dao.impl;
 
 import com.ournews.dao.CommentDao;
-import com.ournews.utils.Constant;
-import com.ournews.utils.DateUtil;
-import com.ournews.utils.ResultUtil;
-import com.ournews.utils.SQLManager;
+import com.ournews.utils.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -41,7 +38,7 @@ public class CommentDaoImpl implements CommentDao {
                             preparedStatement.setString(3, content);
                             preparedStatement.setLong(4, System.currentTimeMillis());
                             if (preparedStatement.executeUpdate() == 1) {
-                                return ResultUtil.getSuccessJSON("").toString();
+                                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
                             }
                             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                         }
@@ -66,10 +63,12 @@ public class CommentDaoImpl implements CommentDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT comment.id,comment.content,comment.create_time,user.id,user.nick_name,user.sex,user.photo FROM comment,user WHERE comment.nid = \""
-                + nid + "\" AND comment.uid = user.id AND user.state = 1 AND comment.state = 1";
+        ResultSet resultSetNum = null;
+        ResultSet resultSetChild = null;
+        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo " +
+                "FROM comment AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.nid = \"" + nid + "\" AND u.state = 1 AND c.state = 1";
         if (sort.equals("1"))
-            sql = sql + " ORDER BY comment.id DESC";
+            sql = sql + " ORDER BY c.id DESC";
         sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
         try {
             connection = SQLManager.getConnection();
@@ -78,21 +77,231 @@ public class CommentDaoImpl implements CommentDao {
             JSONArray jsonArray = new JSONArray();
             if (resultSet != null) {
                 while (resultSet.next()) {
+                    long cid = resultSet.getLong(1);
+
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", resultSet.getLong(1));
+                    jsonObject.put("id", cid);
                     jsonObject.put("content", resultSet.getString(2));
                     jsonObject.put("create_time", DateUtil.getTime(resultSet.getLong(3)));
-
                     JSONObject userJSON = new JSONObject();
                     userJSON.put("id", resultSet.getLong(4));
                     userJSON.put("nick_name", resultSet.getString(5));
                     userJSON.put("sex", resultSet.getInt(6));
                     userJSON.put("photo", resultSet.getString(7));
-
                     jsonObject.put("user", userJSON);
+
+                    SQLManager.closePreparedStatement(preparedStatement);
+                    String sqlNum = "SELECT count(1) FROM comment_like WHERE cid = \"" + cid + "\"";
+                    preparedStatement = connection.prepareStatement(sqlNum);
+                    resultSetNum = preparedStatement.executeQuery();
+                    if (resultSetNum != null) {
+                        if (resultSetNum.next()) {
+                            jsonObject.put("is_like", -1);
+                            jsonObject.put("like_num", resultSetNum.getInt(1));
+                            SQLManager.closeResultSet(resultSetNum);
+                            SQLManager.closePreparedStatement(preparedStatement);
+
+                            String sqlChild = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo" +
+                                    " FROM comment_child AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.cid = \""
+                                    + cid + "\" AND c.state = 1 AND u.state = 1 limit 0 , 3";
+                            preparedStatement = connection.prepareStatement(sqlChild);
+                            resultSetChild = preparedStatement.executeQuery();
+                            JSONArray childArray = new JSONArray();
+
+                            if (resultSetChild != null) {
+                                while (resultSetChild.next()) {
+                                    JSONObject childJSON = new JSONObject();
+                                    childJSON.put("id", resultSetChild.getLong(1));
+                                    childJSON.put("content", resultSetChild.getString(2));
+                                    childJSON.put("create_time", DateUtil.getTime(resultSetChild.getLong(3)));
+                                    JSONObject childUserJSON = new JSONObject();
+                                    childUserJSON.put("id", resultSetChild.getLong(4));
+                                    childUserJSON.put("nick_name", resultSetChild.getString(5));
+                                    childUserJSON.put("sex", resultSetChild.getInt(6));
+                                    childUserJSON.put("photo", resultSetChild.getString(7));
+                                    childJSON.put("user", childUserJSON);
+                                    childArray.add(childJSON);
+                                }
+                            }
+                            jsonObject.put("comment_children", childArray);
+
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            sqlNum = "SELECT count(1) FROM comment_child WHERE cid = \"" + cid + "\"";
+                            preparedStatement = connection.prepareStatement(sqlNum);
+                            resultSetNum = preparedStatement.executeQuery();
+                            if (resultSetNum != null) {
+                                if (resultSetNum.next()) {
+                                    jsonObject.put("child_num", resultSetNum.getInt(1));
+                                }
+                            }
+                        }
+                    }
                     jsonArray.add(jsonObject);
                 }
-                return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+                JSONObject json = new JSONObject();
+                json.put("comments", jsonArray);
+                return ResultUtil.getSuccessJSON(json).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSetChild);
+            SQLManager.closeResultSet(resultSetNum);
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String getCommentUseUid(String uid, String nid, String page, String size, String sort) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ResultSet resultSetNum = null;
+        ResultSet resultSetUser = null;
+        ResultSet resultSetChild = null;
+        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo " +
+                "FROM comment AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.nid = \"" + nid + "\" AND u.state = 1 AND c.state = 1";
+        if (sort.equals("1"))
+            sql = sql + " ORDER BY c.id DESC";
+        sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = new JSONArray();
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    long cid = resultSet.getLong(1);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", cid);
+                    jsonObject.put("content", resultSet.getString(2));
+                    jsonObject.put("create_time", DateUtil.getTime(resultSet.getLong(3)));
+                    JSONObject userJSON = new JSONObject();
+                    userJSON.put("id", resultSet.getLong(4));
+                    userJSON.put("nick_name", resultSet.getString(5));
+                    userJSON.put("sex", resultSet.getInt(6));
+                    userJSON.put("photo", resultSet.getString(7));
+                    jsonObject.put("user", userJSON);
+
+                    SQLManager.closePreparedStatement(preparedStatement);
+                    String sqlNum = "SELECT count(1) FROM comment_like WHERE cid = \"" + cid + "\"";
+                    preparedStatement = connection.prepareStatement(sqlNum);
+                    resultSetNum = preparedStatement.executeQuery();
+                    if (resultSetNum != null) {
+                        if (resultSetNum.next()) {
+                            jsonObject.put("like_num", resultSetNum.getInt(1));
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            String getUserLike = "SELECT count(1) FROM comment_like WHERE cid = \"" + cid + "\" AND uid = \"" + uid + "\"";
+                            preparedStatement = connection.prepareStatement(getUserLike);
+                            resultSetUser = preparedStatement.executeQuery();
+                            if(resultSetUser!=null){
+                                if(resultSetUser.next()){
+                                    jsonObject.put("is_like", resultSetUser.getInt(1));
+                                    SQLManager.closeResultSet(resultSetNum);
+                                    SQLManager.closePreparedStatement(preparedStatement);
+
+                                    String sqlChild = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo" +
+                                            " FROM comment_child AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.cid = \""
+                                            + cid + "\" AND c.state = 1 AND u.state = 1 limit 0 , 3";
+                                    preparedStatement = connection.prepareStatement(sqlChild);
+                                    resultSetChild = preparedStatement.executeQuery();
+                                    JSONArray childArray = new JSONArray();
+
+                                    if (resultSetChild != null) {
+                                        while (resultSetChild.next()) {
+                                            JSONObject childJSON = new JSONObject();
+                                            childJSON.put("id", resultSetChild.getLong(1));
+                                            childJSON.put("content", resultSetChild.getString(2));
+                                            childJSON.put("create_time", DateUtil.getTime(resultSetChild.getLong(3)));
+                                            JSONObject childUserJSON = new JSONObject();
+                                            childUserJSON.put("id", resultSetChild.getLong(4));
+                                            childUserJSON.put("nick_name", resultSetChild.getString(5));
+                                            childUserJSON.put("sex", resultSetChild.getInt(6));
+                                            childUserJSON.put("photo", resultSetChild.getString(7));
+                                            childJSON.put("user", childUserJSON);
+                                            childArray.add(childJSON);
+                                        }
+                                    }
+                                    jsonObject.put("comment_children", childArray);
+
+                                    SQLManager.closePreparedStatement(preparedStatement);
+                                    sqlNum = "SELECT count(1) FROM comment_child WHERE cid = \"" + cid + "\"";
+                                    preparedStatement = connection.prepareStatement(sqlNum);
+                                    resultSetNum = preparedStatement.executeQuery();
+                                    if (resultSetNum != null) {
+                                        if (resultSetNum.next()) {
+                                            jsonObject.put("child_num", resultSetNum.getInt(1));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    jsonArray.add(jsonObject);
+                }
+                JSONObject json = new JSONObject();
+                json.put("comments", jsonArray);
+                return ResultUtil.getSuccessJSON(json).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSetChild);
+            SQLManager.closeResultSet(resultSetUser);
+            SQLManager.closeResultSet(resultSetNum);
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String likeComment(String cid, String uid, String type) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),state FROM comment WHERE id = \"" + cid + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) != 0) {
+                        if (resultSet.getInt(2) == 1) {
+                            SQLManager.closeResultSet(resultSet);
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            if (Integer.valueOf(type) == 0) {
+                                sql = "INSERT INTO comment_like ( uid , cid ) VALUES ( ? , ? )";
+                                preparedStatement = connection.prepareStatement(sql);
+                                preparedStatement.setString(1, uid);
+                                preparedStatement.setString(2, cid);
+                                if (preparedStatement.executeUpdate() == 1) {
+                                    return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+                                } else {
+                                    return ResultUtil.getErrorJSON(Constant.HAS_LIKE_COMMENT).toString();
+                                }
+                            } else {
+                                sql = "DELETE FROM comment_like WHERE uid = \"" + uid + "\" AND cid = \"" + cid + "\"";
+                                preparedStatement = connection.prepareStatement(sql);
+                                if (preparedStatement.executeUpdate() == 1) {
+                                    return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+                                } else {
+                                    return ResultUtil.getErrorJSON(Constant.NO_LIKE_COMMENT).toString();
+                                }
+                            }
+                        }
+                        return ResultUtil.getErrorJSON(Constant.COMMENT_NO_ONLINE).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.NO_COMMENT).toString();
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
@@ -107,6 +316,45 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public String writeChildComment(String uid, String cid, String content) {
-        return null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),state FROM comment WHERE id = \"" + cid + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) != 0) {
+                        if (resultSet.getInt(2) == 1) {
+                            SQLManager.closeResultSet(resultSet);
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            sql = "INSERT INTO comment_child ( cid , uid , content , create_time ) VALUES ( ? , ? , ? , ? )";
+                            preparedStatement = connection.prepareStatement(sql);
+                            preparedStatement = connection.prepareStatement(sql);
+                            preparedStatement.setString(1, cid);
+                            preparedStatement.setString(2, uid);
+                            preparedStatement.setString(3, content);
+                            preparedStatement.setLong(4, System.currentTimeMillis());
+                            if (preparedStatement.executeUpdate() == 1) {
+                                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+                            }
+                            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                        }
+                        return ResultUtil.getErrorJSON(Constant.COMMENT_NO_ONLINE).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.NO_COMMENT).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
     }
 }

@@ -37,7 +37,7 @@ public class PushDaoImpl implements PushDao {
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("type", "new");
                             jsonObject.put("data", newJSON);
-                            return PushUtil.pushToAndroid("OurNews", newJSON.getString("title"), jsonObject.toString());
+                            return PushUtil.pushNewToAll("OurNews", newJSON.getString("title"), jsonObject.toString());
                         }
                         return ResultUtil.getErrorJSON(Constant.NEW_NO_ONLINE).toString();
                     }

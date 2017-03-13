@@ -38,8 +38,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String getComment(String nid, String page, String size, String sort) {
-        if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+    public String getComment(String uid, String nid, String page, String size, String sort) {
+        if (!MyUtils.isNumber(nid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)
+                || (!MyUtils.isNull(uid) && !MyUtils.isNumber(uid))) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
         if (!MyUtils.isNumber(sort, 1, 2))
@@ -48,7 +49,9 @@ public class CommentServiceImpl implements CommentService {
             page = "1";
         if (Integer.valueOf(size) > 20)
             size = "20";
-        return new CommentDaoImpl().getComment(nid, page, size, sort);
+        if (MyUtils.isNull(uid))
+            return new CommentDaoImpl().getComment(nid, page, size, sort);
+        return new CommentDaoImpl().getCommentUseUid(uid, nid, page, size, sort);
     }
 
     @Override
@@ -74,5 +77,24 @@ public class CommentServiceImpl implements CommentService {
             }
             return new CommentDaoImpl().writeChildComment(uid, cid, content);
         }
+    }
+
+    @Override
+    public String lickComment(String cid, String uid, String token, String type) {
+        if (!MyUtils.isNumber(cid) || !MyUtils.isNumber(uid) || MyUtils.isNull(token)
+                || !MyUtils.isNumber(type, 0, 1)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        int isTrueToken = new UserDaoImpl().tokenIsTrue(uid, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        }
+        return new CommentDaoImpl().likeComment(cid, uid, type);
     }
 }

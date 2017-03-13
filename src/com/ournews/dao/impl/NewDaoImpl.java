@@ -35,7 +35,7 @@ public class NewDaoImpl implements NewDao {
             preparedStatement.setString(6, type);
             if (preparedStatement.executeUpdate() == 1) {
                 MyUtils.zipImage(new File(ServletActionContext.getServletContext().getRealPath("upload"), cover));
-                return ResultUtil.getSuccessJSON("").toString();
+                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
             }
             return ResultUtil.getErrorJSON(Constant.ADD_NEWS_ERROR).toString();
         } catch (SQLException | ClassNotFoundException | IOException e) {
@@ -86,7 +86,9 @@ public class NewDaoImpl implements NewDao {
                         jsonObject.put("list", jsonArray);
                         JSONArray array = new JSONArray();
                         array.add(jsonObject);
-                        return ResultUtil.getSuccessJSON(array.toString()).toString();
+                        JSONObject json = new JSONObject();
+                        json.put("news", array);
+                        return ResultUtil.getSuccessJSON(json).toString();
                     }
                 }
                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
@@ -150,7 +152,9 @@ public class NewDaoImpl implements NewDao {
                     }
                     jsonObject.put("list", jsonArray);
                     array.add(jsonObject);
-                    return ResultUtil.getSuccessJSON(array.toString()).toString();
+                    JSONObject json = new JSONObject();
+                    json.put("news", array);
+                    return ResultUtil.getSuccessJSON(json).toString();
                 }
                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
             }
@@ -191,7 +195,9 @@ public class NewDaoImpl implements NewDao {
                     jsonArray.add(jsonObject);
                 }
             }
-            return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+            JSONObject json = new JSONObject();
+            json.put("news", jsonArray);
+            return ResultUtil.getSuccessJSON(json).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
@@ -231,7 +237,9 @@ public class NewDaoImpl implements NewDao {
                     jsonObject.put("type", resultSet.getInt(6));
                     jsonArray.add(jsonObject);
                 }
-                return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+                JSONObject json = new JSONObject();
+                json.put("news", jsonArray);
+                return ResultUtil.getSuccessJSON(json).toString();
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
@@ -310,7 +318,7 @@ public class NewDaoImpl implements NewDao {
                                                                 jsonObject.put("comment_num", commentNum);
                                                                 jsonObject.put("history_num", historyNum);
                                                                 jsonObject.put("collection_num", collectionNum);
-                                                                return ResultUtil.getSuccessJSON(jsonObject.toString()).toString();
+                                                                return ResultUtil.getSuccessJSON(jsonObject).toString();
                                                             }
                                                         }
                                                     }
@@ -380,7 +388,7 @@ public class NewDaoImpl implements NewDao {
                                             jsonObject.put("comment_num", commentNum);
                                             jsonObject.put("history_num", historyNum);
                                             jsonObject.put("collection_num", collectionNum);
-                                            return ResultUtil.getSuccessJSON(jsonObject.toString()).toString();
+                                            return ResultUtil.getSuccessJSON(jsonObject).toString();
                                         }
                                     }
                                 }
@@ -423,7 +431,7 @@ public class NewDaoImpl implements NewDao {
                                 preparedStatement.setString(1, uid);
                                 preparedStatement.setString(2, nid);
                                 if (preparedStatement.executeUpdate() == 1) {
-                                    return ResultUtil.getSuccessJSON("").toString();
+                                    return ResultUtil.getSuccessJSON(new JSONObject()).toString();
                                 } else {
                                     return ResultUtil.getErrorJSON(Constant.HAS_COLLECTION).toString();
                                 }
@@ -431,7 +439,7 @@ public class NewDaoImpl implements NewDao {
                                 sql = "DELETE FROM collection WHERE uid = \"" + uid + "\" AND nid = \"" + nid + "\"";
                                 preparedStatement = connection.prepareStatement(sql);
                                 if (preparedStatement.executeUpdate() == 1) {
-                                    return ResultUtil.getSuccessJSON("").toString();
+                                    return ResultUtil.getSuccessJSON(new JSONObject()).toString();
                                 } else {
                                     return ResultUtil.getErrorJSON(Constant.NO_COLLECTION).toString();
                                 }
@@ -487,7 +495,9 @@ public class NewDaoImpl implements NewDao {
                                 jsonObject.put("type", resultSet.getInt(6));
                                 jsonArray.add(jsonObject);
                             }
-                            return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+                            JSONObject json = new JSONObject();
+                            json.put("news", jsonArray);
+                            return ResultUtil.getSuccessJSON(json).toString();
                         }
                         return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
                     }
@@ -538,7 +548,9 @@ public class NewDaoImpl implements NewDao {
                                 jsonObject.put("type", resultSet.getInt(6));
                                 jsonArray.add(jsonObject);
                             }
-                            return ResultUtil.getSuccessJSON(jsonArray.toString()).toString();
+                            JSONObject json = new JSONObject();
+                            json.put("news", jsonArray);
+                            return ResultUtil.getSuccessJSON(json).toString();
                         }
                         return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                     }

@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String loginName, String password, String time, String umengToken) {
+    public String login(String loginName, String password, String time) {
         if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
@@ -36,13 +36,11 @@ public class UserServiceImpl implements UserService {
         } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         }
-        if (MyUtils.isNull(umengToken))
-            umengToken = "";
-        return new UserDaoImpl().login(loginName, password, time, umengToken);
+        return new UserDaoImpl().login(loginName, password, time);
     }
 
     @Override
-    public String checkLogin(String id, String token, String umengToken) {
+    public String checkLogin(String id, String token) {
         if (!MyUtils.isNumber(id) || MyUtils.isNull(token)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
@@ -56,9 +54,7 @@ public class UserServiceImpl implements UserService {
         } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
         }
-        if (MyUtils.isNull(umengToken))
-            umengToken = "";
-        return new UserDaoImpl().checkLogin(id, umengToken);
+        return new UserDaoImpl().checkLogin(id);
     }
 
     @Override

@@ -15,8 +15,7 @@ public class UserLoginAction extends BaseAction {
         String loginName = request.getParameter("login_name");
         String password = request.getParameter("password");
         String time = request.getParameter("time");
-        String umengToken = request.getParameter("umeng_token");
 
-        sendJSON(new UserServiceImpl().login(loginName, password, time, umengToken));
+        sendJSON(new UserServiceImpl().login(loginName, password, time));
     }
 }
