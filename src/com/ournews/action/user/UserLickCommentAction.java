@@ -12,10 +12,10 @@ public class UserLickCommentAction extends BaseAction {
     @Override
     public void action() throws IOException {
         String cid = request.getParameter("cid");
-        String nid = request.getParameter("nid");
+        String uid = request.getParameter("uid");
         String token = request.getParameter("token");
         String type = request.getParameter("type");
 
-        sendJSON(new CommentServiceImpl().lickComment(cid, nid, token, type));
+        sendJSON(new CommentServiceImpl().lickComment(cid, uid, token, type));
     }
 }
