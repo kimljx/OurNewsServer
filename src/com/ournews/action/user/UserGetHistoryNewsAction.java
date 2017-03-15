@@ -11,7 +11,7 @@ import java.io.IOException;
 public class UserGetHistoryNewsAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String id = request.getParameter("id");
+        String id = request.getParameter("nid");
         String token = request.getParameter("token");
         String uid = request.getParameter("uid");
         String page = request.getParameter("page");

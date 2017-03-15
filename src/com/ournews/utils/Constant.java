@@ -6,7 +6,7 @@ public class Constant {
 
     public static final int RANDOM_NUM = 20;
 
-    public static final long CONNECT_OUT_TIME = 10000;
+    public static final long CONNECT_OUT_TIME = 2 * 60 * 1000;
 
     public static final boolean IS_DEBUG = true;
 

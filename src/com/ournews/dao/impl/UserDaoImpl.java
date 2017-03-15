@@ -142,14 +142,14 @@ public class UserDaoImpl implements UserDao {
                 if (resultSet.next()) {
                     if (resultSet.getInt(1) == 1) {
                         if (resultSet.getInt(2) == 1) {
-                            if (!token.equals(resultSet.getString(3)))
-                                return 4;
+//                            if (!token.equals(resultSet.getString(3)))
+//                                return 5;
                             return 5;
                         }
                         return 3;
                     }
-                    return 2;
                 }
+                return 2;
             }
             return 1;
         } catch (SQLException | ClassNotFoundException e) {
@@ -166,46 +166,29 @@ public class UserDaoImpl implements UserDao {
     public String changeInfo(String id, String token, String nickName, String sex, String photo) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        String sql = "SELECT count(1),token FROM user WHERE id = \"" + id + "\"";
+        String sql = "UPDATE user SET ";
+        boolean had = false;
+        if (nickName != null) {
+            sql = sql + "nick_name=\"" + nickName + "\"";
+            had = true;
+        }
+        if (sex != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "sex=\"" + sex + "\"";
+            had = true;
+        }
+        if (photo != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "photo=\"" + photo + "\"";
+        }
+        sql = sql + " WHERE id = \"" + id + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet != null) {
-                if (resultSet.next()) {
-                    if (resultSet.getInt(1) != 0) {
-                        String sqlToken = resultSet.getString(2);
-                        if (sqlToken.equals(token)) {
-                            SQLManager.closePreparedStatement(preparedStatement);
-                            sql = "UPDATE user SET ";
-                            boolean had = false;
-                            if (nickName != null) {
-                                sql = sql + "nick_name=\"" + nickName + "\"";
-                                had = true;
-                            }
-                            if (sex != null) {
-                                if (had)
-                                    sql = sql + ",";
-                                sql = sql + "sex=\"" + sex + "\"";
-                                had = true;
-                            }
-                            if (photo != null) {
-                                if (had)
-                                    sql = sql + ",";
-                                sql = sql + "photo=\"" + photo + "\"";
-                            }
-                            sql = sql + " WHERE id = \"" + id + "\"";
-                            preparedStatement = connection.prepareStatement(sql);
-                            if (preparedStatement.executeUpdate() == 1) {
-                                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
-                            } else {
-                                return ResultUtil.getErrorJSON(Constant.CHANGE_INFO_ERROR).toString();
-                            }
-                        }
-                        return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-                    }
-                }
+            if (preparedStatement.executeUpdate() == 1) {
+                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
             }
             return ResultUtil.getErrorJSON(Constant.CHANGE_INFO_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
@@ -214,7 +197,6 @@ public class UserDaoImpl implements UserDao {
         } finally {
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
-            SQLManager.closeResultSet(resultSet);
         }
     }
 }

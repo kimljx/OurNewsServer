@@ -274,51 +274,55 @@ public class NewDaoImpl implements NewDao {
                         preparedStatement.setLong(3, System.currentTimeMillis());
                         preparedStatement.executeUpdate();
                         SQLManager.closePreparedStatement(preparedStatement);
-                        sql = "SELECT content FROM news WHERE id = \"" + nid + "\" AND state = 1";
+                        sql = "SELECT count(1),state,content FROM news WHERE id = \"" + nid + "\"";
                         preparedStatement = connection.prepareStatement(sql);
                         resultSet = preparedStatement.executeQuery();
                         if (resultSet != null) {
                             if (resultSet.next()) {
-                                String content = resultSet.getString(1);
-                                SQLManager.closeResultSet(resultSet);
-                                SQLManager.closePreparedStatement(preparedStatement);
-                                sql = "SELECT count(1) FROM comment WHERE nid = \"" + nid + "\" AND state = 1";
-                                preparedStatement = connection.prepareStatement(sql);
-                                resultSet = preparedStatement.executeQuery();
-                                if (resultSet != null) {
-                                    if (resultSet.next()) {
-                                        int commentNum = resultSet.getInt(1);
+                                if (resultSet.getInt(1) != 0) {
+                                    if (resultSet.getInt(2) == 1) {
+                                        String content = resultSet.getString(1);
                                         SQLManager.closeResultSet(resultSet);
                                         SQLManager.closePreparedStatement(preparedStatement);
-                                        sql = "SELECT count(1) FROM history WHERE nid = \"" + nid + "\"";
+                                        sql = "SELECT count(1) FROM comment WHERE nid = \"" + nid + "\" AND state = 1";
                                         preparedStatement = connection.prepareStatement(sql);
                                         resultSet = preparedStatement.executeQuery();
                                         if (resultSet != null) {
                                             if (resultSet.next()) {
-                                                int historyNum = resultSet.getInt(1);
+                                                int commentNum = resultSet.getInt(1);
                                                 SQLManager.closeResultSet(resultSet);
                                                 SQLManager.closePreparedStatement(preparedStatement);
-                                                sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\"";
+                                                sql = "SELECT count(1) FROM history WHERE nid = \"" + nid + "\"";
                                                 preparedStatement = connection.prepareStatement(sql);
                                                 resultSet = preparedStatement.executeQuery();
                                                 if (resultSet != null) {
                                                     if (resultSet.next()) {
-                                                        int collectionNum = resultSet.getInt(1);
+                                                        int historyNum = resultSet.getInt(1);
                                                         SQLManager.closeResultSet(resultSet);
                                                         SQLManager.closePreparedStatement(preparedStatement);
-                                                        sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\" AND uid =\"" + uid + "\"";
+                                                        sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\"";
                                                         preparedStatement = connection.prepareStatement(sql);
                                                         resultSet = preparedStatement.executeQuery();
                                                         if (resultSet != null) {
                                                             if (resultSet.next()) {
-                                                                JSONObject jsonObject = new JSONObject();
-                                                                jsonObject.put("id", nid);
-                                                                jsonObject.put("content", content);
-                                                                jsonObject.put("is_collected", resultSet.getInt(1));
-                                                                jsonObject.put("comment_num", commentNum);
-                                                                jsonObject.put("history_num", historyNum);
-                                                                jsonObject.put("collection_num", collectionNum);
-                                                                return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                                                int collectionNum = resultSet.getInt(1);
+                                                                SQLManager.closeResultSet(resultSet);
+                                                                SQLManager.closePreparedStatement(preparedStatement);
+                                                                sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\" AND uid =\"" + uid + "\"";
+                                                                preparedStatement = connection.prepareStatement(sql);
+                                                                resultSet = preparedStatement.executeQuery();
+                                                                if (resultSet != null) {
+                                                                    if (resultSet.next()) {
+                                                                        JSONObject jsonObject = new JSONObject();
+                                                                        jsonObject.put("id", nid);
+                                                                        jsonObject.put("content", content);
+                                                                        jsonObject.put("is_collected", resultSet.getInt(1));
+                                                                        jsonObject.put("comment_num", commentNum);
+                                                                        jsonObject.put("history_num", historyNum);
+                                                                        jsonObject.put("collection_num", collectionNum);
+                                                                        return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -326,14 +330,17 @@ public class NewDaoImpl implements NewDao {
                                             }
                                         }
                                     }
+                                    return ResultUtil.getErrorJSON(Constant.NEW_NO_ONLINE).toString();
                                 }
                             }
+                            return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
                         }
                         return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                     }
                 }
+                return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
             }
-            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
@@ -349,56 +356,62 @@ public class NewDaoImpl implements NewDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT content FROM news WHERE id = \"" + nid + "\" AND state = 1";
+        String sql = "SELECT count(1),state,content FROM news WHERE id = \"" + nid + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             if (resultSet != null) {
                 if (resultSet.next()) {
-                    String content = resultSet.getString(1);
-                    SQLManager.closeResultSet(resultSet);
-                    SQLManager.closePreparedStatement(preparedStatement);
-                    sql = "SELECT count(1) FROM comment WHERE nid = \"" + nid + "\" AND state = 1";
-                    preparedStatement = connection.prepareStatement(sql);
-                    resultSet = preparedStatement.executeQuery();
-                    if (resultSet != null) {
-                        if (resultSet.next()) {
-                            int commentNum = resultSet.getInt(1);
+                    if (resultSet.getInt(1) != 0) {
+                        if (resultSet.getInt(2) == 1) {
+                            String content = resultSet.getString(3);
                             SQLManager.closeResultSet(resultSet);
                             SQLManager.closePreparedStatement(preparedStatement);
-                            sql = "SELECT count(1) FROM history WHERE nid = \"" + nid + "\"";
+                            sql = "SELECT count(1) FROM comment WHERE nid = \"" + nid + "\" AND state = 1";
                             preparedStatement = connection.prepareStatement(sql);
                             resultSet = preparedStatement.executeQuery();
                             if (resultSet != null) {
                                 if (resultSet.next()) {
-                                    int historyNum = resultSet.getInt(1);
+                                    int commentNum = resultSet.getInt(1);
                                     SQLManager.closeResultSet(resultSet);
                                     SQLManager.closePreparedStatement(preparedStatement);
-                                    sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\"";
+                                    sql = "SELECT count(1) FROM history WHERE nid = \"" + nid + "\"";
                                     preparedStatement = connection.prepareStatement(sql);
                                     resultSet = preparedStatement.executeQuery();
                                     if (resultSet != null) {
                                         if (resultSet.next()) {
-                                            int collectionNum = resultSet.getInt(1);
-                                            JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("id", nid);
-                                            jsonObject.put("content", content);
-                                            jsonObject.put("is_collected", -1);
-                                            jsonObject.put("comment_num", commentNum);
-                                            jsonObject.put("history_num", historyNum);
-                                            jsonObject.put("collection_num", collectionNum);
-                                            return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                            int historyNum = resultSet.getInt(1);
+                                            SQLManager.closeResultSet(resultSet);
+                                            SQLManager.closePreparedStatement(preparedStatement);
+                                            sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\"";
+                                            preparedStatement = connection.prepareStatement(sql);
+                                            resultSet = preparedStatement.executeQuery();
+                                            if (resultSet != null) {
+                                                if (resultSet.next()) {
+                                                    int collectionNum = resultSet.getInt(1);
+                                                    JSONObject jsonObject = new JSONObject();
+                                                    jsonObject.put("id", nid);
+                                                    jsonObject.put("content", content);
+                                                    jsonObject.put("is_collected", -1);
+                                                    jsonObject.put("comment_num", commentNum);
+                                                    jsonObject.put("history_num", historyNum);
+                                                    jsonObject.put("collection_num", collectionNum);
+                                                    return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                                }
+                                            }
                                         }
                                     }
                                 }
+                                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                             }
                         }
-                        return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                        return ResultUtil.getErrorJSON(Constant.NEW_NO_ONLINE).toString();
                     }
                 }
+                return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
             }
-            return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();

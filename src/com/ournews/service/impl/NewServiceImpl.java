@@ -89,9 +89,9 @@ public class NewServiceImpl implements NewService {
             } else if (isTrueToken == 2) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
             } else if (isTrueToken == 3) {
-                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-            } else if (isTrueToken == 4) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+            } else if (isTrueToken == 4) {
+                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
             }
             return new NewDaoImpl().collectNew(nid, uid, type);
         }
@@ -108,9 +108,9 @@ public class NewServiceImpl implements NewService {
         } else if (isTrueToken == 2) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
         } else if (isTrueToken == 3) {
-            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-        } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
         }
         if (!MyUtils.isNumber(sort, 1, 2))
             sort = "1";
@@ -132,9 +132,9 @@ public class NewServiceImpl implements NewService {
         } else if (isTrueToken == 2) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
         } else if (isTrueToken == 3) {
-            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-        } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
         }
         if (!MyUtils.isNumber(sort, 1, 2))
             sort = "1";

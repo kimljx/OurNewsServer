@@ -13,4 +13,6 @@ public interface CommentDao {
     String likeComment(String cid, String uid, String type);
 
     String writeChildComment(String uid, String cid, String content);
+
+    String getChildComment(String cid, String page, String size, String sort);
 }

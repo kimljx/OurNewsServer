@@ -29,11 +29,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(String loginName, String password, String time) {
-        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isTime(time)) {
+        if (MyUtils.isNull(loginName) || MyUtils.isNull(password)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_LENGTH_ERROR).toString();
-        } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
+        } else if (!MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         }
         return new UserDaoImpl().login(loginName, password, time);
@@ -50,16 +50,16 @@ public class UserServiceImpl implements UserService {
         } else if (isTrueToken == 2) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
         } else if (isTrueToken == 3) {
-            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-        } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
         }
         return new UserDaoImpl().checkLogin(id);
     }
 
     @Override
     public String changeInfo(String id, String token, String nickName, String sex, String photo) {
-        if (!MyUtils.isNumber(id) || MyUtils.isNull(token) || token.length() != 32) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (MyUtils.isNull(nickName) && MyUtils.isNull(sex) && MyUtils.isNull(photo)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
@@ -70,9 +70,9 @@ public class UserServiceImpl implements UserService {
             } else if (isTrueToken == 2) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
             } else if (isTrueToken == 3) {
-                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-            } else if (isTrueToken == 4) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+            } else if (isTrueToken == 4) {
+                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
             }
             if (MyUtils.isNull(nickName))
                 nickName = null;

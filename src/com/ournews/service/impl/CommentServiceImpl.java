@@ -17,7 +17,7 @@ public class CommentServiceImpl implements CommentService {
         if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid) || !MyUtils.isVarchar(content)
                 || !MyUtils.isTime(time) || MyUtils.isNull(token) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
-        } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
+        } else if (!MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         } else {
             int isTrueToken = new UserDaoImpl().tokenIsTrue(uid, token);
@@ -26,9 +26,9 @@ public class CommentServiceImpl implements CommentService {
             } else if (isTrueToken == 2) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
             } else if (isTrueToken == 3) {
-                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-            } else if (isTrueToken == 4) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+            } else if (isTrueToken == 4) {
+                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
             }
             if (!key.equals(MD5Util.getMD5(Constant.KEY + token + time))) {
                 return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
@@ -57,9 +57,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public String writeChildComment(String uid, String cid, String content, String time, String token, String key) {
         if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(cid) || !MyUtils.isVarchar(content)
-                || !MyUtils.isTime(time) || MyUtils.isNull(token) || MyUtils.isNull(key)) {
+                || MyUtils.isNull(token) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
-        } else if (MyUtils.isConnectTimeOut(Long.valueOf(time))) {
+        } else if (!MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         } else {
             int isTrueToken = new UserDaoImpl().tokenIsTrue(uid, token);
@@ -68,9 +68,9 @@ public class CommentServiceImpl implements CommentService {
             } else if (isTrueToken == 2) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
             } else if (isTrueToken == 3) {
-                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-            } else if (isTrueToken == 4) {
                 return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+            } else if (isTrueToken == 4) {
+                return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
             }
             if (!key.equals(MD5Util.getMD5(Constant.KEY + token + time))) {
                 return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
@@ -91,10 +91,24 @@ public class CommentServiceImpl implements CommentService {
         } else if (isTrueToken == 2) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
         } else if (isTrueToken == 3) {
-            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
-        } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
         }
         return new CommentDaoImpl().likeComment(cid, uid, type);
+    }
+
+    @Override
+    public String getChildComment(String cid, String page, String size, String sort) {
+        if (!MyUtils.isNumber(cid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        if (!MyUtils.isNumber(sort, 1, 2))
+            sort = "1";
+        if (Integer.valueOf(page) < 1)
+            page = "1";
+        if (Integer.valueOf(size) > 20)
+            size = "20";
+        return new CommentDaoImpl().getChildComment(cid, page, size, sort);
     }
 }

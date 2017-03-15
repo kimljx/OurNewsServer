@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class MyUtils {
     public static boolean isNull(String str) {
-        return str == null || str.equals("");
+        return str == null || str.equals("") || str.equals("null");
     }
 
     public static boolean isLoginName(String str) {
@@ -45,7 +45,7 @@ public class MyUtils {
     public static boolean isTime(String time) {
         if (!isNumber(time))
             return false;
-        return Long.valueOf(time) <= System.currentTimeMillis();
+        return Math.abs(Long.valueOf(time) - System.currentTimeMillis()) <= 2 * 60 * 1000;
     }
 
     public static boolean isNumber(String str) {
@@ -93,10 +93,6 @@ public class MyUtils {
         if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".bmp"))
             return true;
         return false;
-    }
-
-    public static boolean isConnectTimeOut(long time) {
-        return (System.currentTimeMillis() - time) > Constant.CONNECT_OUT_TIME;
     }
 
     public static void zipImage(File file) throws IOException {

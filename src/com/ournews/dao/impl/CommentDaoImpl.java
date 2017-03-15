@@ -199,8 +199,8 @@ public class CommentDaoImpl implements CommentDao {
                             String getUserLike = "SELECT count(1) FROM comment_like WHERE cid = \"" + cid + "\" AND uid = \"" + uid + "\"";
                             preparedStatement = connection.prepareStatement(getUserLike);
                             resultSetUser = preparedStatement.executeQuery();
-                            if(resultSetUser!=null){
-                                if(resultSetUser.next()){
+                            if (resultSetUser != null) {
+                                if (resultSetUser.next()) {
                                     jsonObject.put("is_like", resultSetUser.getInt(1));
                                     SQLManager.closeResultSet(resultSetNum);
                                     SQLManager.closePreparedStatement(preparedStatement);
@@ -346,6 +346,50 @@ public class CommentDaoImpl implements CommentDao {
                     }
                 }
                 return ResultUtil.getErrorJSON(Constant.NO_COMMENT).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String getChildComment(String cid, String page, String size, String sort) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo " +
+                "FROM comment_child AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.cid = \"" + cid + "\" AND u.state = 1 AND c.state = 1";
+        if (sort.equals("1"))
+            sql = sql + " ORDER BY c.id DESC";
+        sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = new JSONArray();
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", resultSet.getLong(1));
+                    jsonObject.put("content", resultSet.getString(2));
+                    jsonObject.put("create_time", DateUtil.getTime(resultSet.getLong(3)));
+                    JSONObject userJSON = new JSONObject();
+                    userJSON.put("id", resultSet.getLong(4));
+                    userJSON.put("nick_name", resultSet.getString(5));
+                    userJSON.put("sex", resultSet.getInt(6));
+                    userJSON.put("photo", resultSet.getString(7));
+                    jsonObject.put("user", userJSON);
+                    jsonArray.add(jsonObject);
+                }
+                JSONObject json = new JSONObject();
+                json.put("comment_children", jsonArray);
+                return ResultUtil.getSuccessJSON(json).toString();
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
