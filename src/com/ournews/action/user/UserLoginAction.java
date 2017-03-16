@@ -12,10 +12,14 @@ public class UserLoginAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String loginName = request.getParameter("login_name");
-        String password = request.getParameter("password");
-        String time = request.getParameter("time");
+        if (isPost()) {
+            String loginName = request.getParameter("login_name");
+            String password = request.getParameter("password");
+            String time = request.getParameter("time");
 
-        sendJSON(new UserServiceImpl().login(loginName, password, time));
+            sendJSON(new UserServiceImpl().login(loginName, password, time));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

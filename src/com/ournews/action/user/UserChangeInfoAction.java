@@ -12,12 +12,16 @@ public class UserChangeInfoAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String id = request.getParameter("id");
-        String token = request.getParameter("token");
-        String nickName = request.getParameter("nick_name");
-        String sex = request.getParameter("sex");
-        String photo = request.getParameter("photo");
+        if (isPost()) {
+            String id = request.getParameter("id");
+            String token = request.getParameter("token");
+            String nickName = request.getParameter("nick_name");
+            String sex = request.getParameter("sex");
+            String photo = request.getParameter("photo");
 
-        sendJSON(new UserServiceImpl().changeInfo(id, token, nickName, sex, photo));
+            sendJSON(new UserServiceImpl().changeInfo(id, token, nickName, sex, photo));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

@@ -12,11 +12,15 @@ public class UserRegisterAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String loginName = request.getParameter("login_name");
-        String password = request.getParameter("password");
-        String time = request.getParameter("time");
-        String key = request.getParameter("key");
+        if (isPost()) {
+            String loginName = request.getParameter("login_name");
+            String password = request.getParameter("password");
+            String time = request.getParameter("time");
+            String key = request.getParameter("key");
 
-        sendJSON(new UserServiceImpl().register(loginName, password, time, key));
+            sendJSON(new UserServiceImpl().register(loginName, password, time, key));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

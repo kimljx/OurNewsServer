@@ -11,9 +11,13 @@ import java.io.IOException;
 public class UserCheckLoginAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String id = request.getParameter("id");
-        String token = request.getParameter("token");
+        if (isPost()) {
+            String id = request.getParameter("id");
+            String token = request.getParameter("token");
 
-        sendJSON(new UserServiceImpl().checkLogin(id, token));
+            sendJSON(new UserServiceImpl().checkLogin(id, token));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

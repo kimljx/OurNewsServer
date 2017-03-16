@@ -1,10 +1,6 @@
 package com.ournews.utils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class SQLManager {
 
@@ -43,6 +39,16 @@ public class SQLManager {
         }
     }
 
+    public static void closeStatement(Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void closeResultSet(ResultSet rs) {
         if (rs != null) {
             try {
@@ -51,5 +57,14 @@ public class SQLManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void rollbackConnection(Connection connection){
+        if(connection!=null)
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 }

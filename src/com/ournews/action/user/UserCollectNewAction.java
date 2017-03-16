@@ -12,11 +12,15 @@ public class UserCollectNewAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String nid = request.getParameter("nid");
-        String uid = request.getParameter("uid");
-        String token = request.getParameter("token");
-        String type = request.getParameter("type");
+        if (isPost()) {
+            String nid = request.getParameter("nid");
+            String uid = request.getParameter("uid");
+            String token = request.getParameter("token");
+            String type = request.getParameter("type");
 
-        sendJSON(new NewServiceImpl().collectionNew(nid, uid, token, type));
+            sendJSON(new NewServiceImpl().collectionNew(nid, uid, token, type));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

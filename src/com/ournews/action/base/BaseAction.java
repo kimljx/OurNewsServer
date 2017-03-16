@@ -1,6 +1,8 @@
 package com.ournews.action.base;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.ournews.utils.Constant;
+import net.sf.json.JSONObject;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
@@ -26,6 +28,16 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
     }
 
     public abstract void action() throws IOException;
+
+    public boolean isPost() {
+        return Constant.IS_DEBUG || request.getMethod().equals("POST");
+    }
+
+    public String getNoPostResponse() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("error", "Error request method");
+        return jsonObject.toString();
+    }
 
     public void sendJSON(String result) throws IOException {
 //            response.setContentType("text/html;charset=utf-8");

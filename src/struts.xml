@@ -85,6 +85,9 @@
     </package>
 
     <package name="ManagerRequest" extends="json-default">
+        <action name="setMode" method="action" class="com.ournews.action.manager.ManagerSetModeAction">
+            <result type="json"/>
+        </action>
         <action name="addNews" method="action" class="com.ournews.action.manager.ManagerAddNewsAction">
             <result type="json"/>
         </action>

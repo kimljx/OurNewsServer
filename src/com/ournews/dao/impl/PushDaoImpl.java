@@ -37,7 +37,7 @@ public class PushDaoImpl implements PushDao {
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("type", "new");
                             jsonObject.put("data", newJSON);
-                            return PushUtil.pushNewToAll("OurNews", newJSON.getString("title"), jsonObject.toString());
+                            return PushUtil.pushNewToAll(newJSON.getString("title"), jsonObject.toString());
                         }
                         return ResultUtil.getErrorJSON(Constant.NEW_NO_ONLINE).toString();
                     }
@@ -52,6 +52,46 @@ public class PushDaoImpl implements PushDao {
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
             SQLManager.closeResultSet(resultSet);
+        }
+    }
+
+    @Override
+    public void pushChildCommentToUser(String uid, String cid, String content) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT user.id FROM comment,user WHERE comment.id = \"" + cid + "\" AND comment.uid = user.id";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    String id = resultSet.getString(1);
+                    if (!id.equals(uid)) {
+                        SQLManager.closeResultSet(resultSet);
+                        SQLManager.closePreparedStatement(preparedStatement);
+                        sql = "SELECT nick_name FROM user WHERE id = \"" + uid + "\"";
+                        preparedStatement = connection.prepareStatement(sql);
+                        resultSet = preparedStatement.executeQuery();
+                        if (resultSet != null) {
+                            if (resultSet.next()) {
+                                String otherUserName = resultSet.getString(1);
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("type", "child_comment");
+                                jsonObject.put("data", new JSONObject());
+                                PushUtil.pushChildCommentToUser(id, otherUserName, jsonObject.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
         }
     }
 }

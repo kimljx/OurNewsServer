@@ -12,11 +12,15 @@ public class UserSearchNewAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String name = request.getParameter("name");
-        String page = request.getParameter("page");
-        String size = request.getParameter("size");
-        String sort = request.getParameter("sort");
+        if (isPost()) {
+            String name = request.getParameter("name");
+            String page = request.getParameter("page");
+            String size = request.getParameter("size");
+            String sort = request.getParameter("sort");
 
-        sendJSON(new NewServiceImpl().getSearchNew(name, page, size, sort));
+            sendJSON(new NewServiceImpl().getSearchNew(name, page, size, sort));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

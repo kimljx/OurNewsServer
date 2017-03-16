@@ -5,4 +5,6 @@ package com.ournews.dao;
  */
 public interface PushDao {
     String pushNewToAll(String nid);
+
+    void pushChildCommentToUser(String uid, String cid, String content);
 }

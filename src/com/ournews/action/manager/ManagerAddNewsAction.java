@@ -12,12 +12,16 @@ public class ManagerAddNewsAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String title = request.getParameter("title");
-        String cover = request.getParameter("cover");
-        String abstractContent = request.getParameter("abstract");
-        String content = request.getParameter("content");
-        String type = request.getParameter("type");
+        if (isPost()) {
+            String title = request.getParameter("title");
+            String cover = request.getParameter("cover");
+            String abstractContent = request.getParameter("abstract");
+            String content = request.getParameter("content");
+            String type = request.getParameter("type");
 
-        sendJSON(new NewServiceImpl().addNew(title, cover, abstractContent, content, type));
+            sendJSON(new NewServiceImpl().addNew(title, cover, abstractContent, content, type));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

@@ -11,13 +11,17 @@ import java.io.IOException;
 public class UserGetHistoryNewsAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String id = request.getParameter("nid");
-        String token = request.getParameter("token");
-        String uid = request.getParameter("uid");
-        String page = request.getParameter("page");
-        String size = request.getParameter("size");
-        String sort = request.getParameter("sort");
+        if (isPost()) {
+            String id = request.getParameter("nid");
+            String token = request.getParameter("token");
+            String uid = request.getParameter("uid");
+            String page = request.getParameter("page");
+            String size = request.getParameter("size");
+            String sort = request.getParameter("sort");
 
-        sendJSON(new NewServiceImpl().getHistory(id, token, uid, page, size, sort));
+            sendJSON(new NewServiceImpl().getHistory(id, token, uid, page, size, sort));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

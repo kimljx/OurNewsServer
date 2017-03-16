@@ -11,9 +11,13 @@ import java.io.IOException;
 public class ManagerPushNewToAllAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String nid = request.getParameter("nid");
-        String time = request.getParameter("time");
+        if (isPost()) {
+            String nid = request.getParameter("nid");
+            String time = request.getParameter("time");
 
-        sendJSON(new PushServiceImpl().pushNewToAll(nid, time));
+            sendJSON(new PushServiceImpl().pushNewToAll(nid, time));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

@@ -12,9 +12,13 @@ public class UserGetNewContentAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String uid = request.getParameter("uid");
-        String nid = request.getParameter("nid");
+        if (isPost()) {
+            String uid = request.getParameter("uid");
+            String nid = request.getParameter("nid");
 
-        sendJSON(new NewServiceImpl().getContent(uid, nid));
+            sendJSON(new NewServiceImpl().getContent(uid, nid));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

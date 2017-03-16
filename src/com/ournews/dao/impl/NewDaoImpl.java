@@ -281,7 +281,7 @@ public class NewDaoImpl implements NewDao {
                             if (resultSet.next()) {
                                 if (resultSet.getInt(1) != 0) {
                                     if (resultSet.getInt(2) == 1) {
-                                        String content = resultSet.getString(1);
+                                        String content = resultSet.getString(3);
                                         SQLManager.closeResultSet(resultSet);
                                         SQLManager.closePreparedStatement(preparedStatement);
                                         sql = "SELECT count(1) FROM comment WHERE nid = \"" + nid + "\" AND state = 1";

@@ -11,13 +11,17 @@ import java.io.IOException;
 public class UserWriteChildCommentAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String uid = request.getParameter("uid");
-        String cid = request.getParameter("cid");
-        String content = request.getParameter("content");
-        String time = request.getParameter("time");
-        String token = request.getParameter("token");
-        String key = request.getParameter("key");
+        if (isPost()) {
+            String uid = request.getParameter("uid");
+            String cid = request.getParameter("cid");
+            String content = request.getParameter("content");
+            String time = request.getParameter("time");
+            String token = request.getParameter("token");
+            String key = request.getParameter("key");
 
-        sendJSON(new CommentServiceImpl().writeChildComment(uid, cid, content, time, token, key));
+            sendJSON(new CommentServiceImpl().writeChildComment(uid, cid, content, time, token, key));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

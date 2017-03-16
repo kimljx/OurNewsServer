@@ -5,10 +5,7 @@ import com.ournews.utils.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by Misutesu on 2017/3/11 0011.
@@ -318,29 +315,36 @@ public class CommentDaoImpl implements CommentDao {
     public String writeChildComment(String uid, String cid, String content) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        Statement statement = null;
         ResultSet resultSet = null;
         String sql = "SELECT count(1),state FROM comment WHERE id = \"" + cid + "\"";
         try {
             connection = SQLManager.getConnection();
+            connection.setAutoCommit(false);
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             if (resultSet != null) {
                 if (resultSet.next()) {
                     if (resultSet.getInt(1) != 0) {
                         if (resultSet.getInt(2) == 1) {
-                            SQLManager.closeResultSet(resultSet);
-                            SQLManager.closePreparedStatement(preparedStatement);
-                            sql = "INSERT INTO comment_child ( cid , uid , content , create_time ) VALUES ( ? , ? , ? , ? )";
-                            preparedStatement = connection.prepareStatement(sql);
-                            preparedStatement = connection.prepareStatement(sql);
-                            preparedStatement.setString(1, cid);
-                            preparedStatement.setString(2, uid);
-                            preparedStatement.setString(3, content);
-                            preparedStatement.setLong(4, System.currentTimeMillis());
-                            if (preparedStatement.executeUpdate() == 1) {
+                            String sql1 = "INSERT INTO comment_child ( cid , uid , content , create_time ) " +
+                                    "VALUES ( \"" + cid + "\" , \"" + uid + "\" , \""
+                                    + content + "\" , \"" + System.currentTimeMillis() + "\" )";
+                            String sql2 = "INSERT INTO message ( uid , type , cid , create_time ) " +
+                                    "VALUES ( \"" + uid + "\" , \"0\" , \""
+                                    + cid + "\" , \"" + System.currentTimeMillis() + "\" )";
+                            statement = connection.createStatement();
+                            statement.addBatch(sql1);
+                            statement.addBatch(sql2);
+                            int[] result = statement.executeBatch();
+                            if (result[0] == 0 || result[1] == 0) {
+                                connection.rollback();
+                                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                            } else {
+                                connection.commit();
+                                new PushDaoImpl().pushChildCommentToUser(uid, cid, content);
                                 return ResultUtil.getSuccessJSON(new JSONObject()).toString();
                             }
-                            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                         }
                         return ResultUtil.getErrorJSON(Constant.COMMENT_NO_ONLINE).toString();
                     }
@@ -350,9 +354,11 @@ public class CommentDaoImpl implements CommentDao {
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            SQLManager.rollbackConnection(connection);
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } finally {
             SQLManager.closeResultSet(resultSet);
+            SQLManager.closeStatement(statement);
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
         }

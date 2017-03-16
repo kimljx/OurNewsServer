@@ -8,13 +8,7 @@ public class Constant {
 
     public static final long CONNECT_OUT_TIME = 2 * 60 * 1000;
 
-    public static final boolean IS_DEBUG = true;
-
-    public static final String GET_METHOD_ERROR = "Error request method";
-
-    public static final String POST_ERROR = "error";
-
-    public static final String POST_SUCCESS = "success";
+    public static boolean IS_DEBUG = true;
 
     // 服务器错误
     public static final int SERVER_ERROR = 100;

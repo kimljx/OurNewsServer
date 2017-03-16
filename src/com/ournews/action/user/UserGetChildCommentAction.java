@@ -11,11 +11,15 @@ import java.io.IOException;
 public class UserGetChildCommentAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String cid = request.getParameter("cid");
-        String page = request.getParameter("page");
-        String size = request.getParameter("size");
-        String sort = request.getParameter("sort");
+        if (isPost()) {
+            String cid = request.getParameter("cid");
+            String page = request.getParameter("page");
+            String size = request.getParameter("size");
+            String sort = request.getParameter("sort");
 
-        sendJSON(new CommentServiceImpl().getChildComment(cid, page, size, sort));
+            sendJSON(new CommentServiceImpl().getChildComment(cid, page, size, sort));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

@@ -12,8 +12,12 @@ public class UserGetHomeNewsAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String selectType = request.getParameter("type");
+        if (isPost()) {
+            String selectType = request.getParameter("type");
 
-        sendJSON(new NewServiceImpl().getHomeNew(selectType));
+            sendJSON(new NewServiceImpl().getHomeNew(selectType));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

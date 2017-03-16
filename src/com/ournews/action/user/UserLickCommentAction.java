@@ -11,11 +11,15 @@ import java.io.IOException;
 public class UserLickCommentAction extends BaseAction {
     @Override
     public void action() throws IOException {
-        String cid = request.getParameter("cid");
-        String uid = request.getParameter("uid");
-        String token = request.getParameter("token");
-        String type = request.getParameter("type");
+        if (isPost()) {
+            String cid = request.getParameter("cid");
+            String uid = request.getParameter("uid");
+            String token = request.getParameter("token");
+            String type = request.getParameter("type");
 
-        sendJSON(new CommentServiceImpl().lickComment(cid, uid, token, type));
+            sendJSON(new CommentServiceImpl().lickComment(cid, uid, token, type));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }

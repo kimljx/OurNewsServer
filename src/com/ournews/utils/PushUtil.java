@@ -1,5 +1,6 @@
 package com.ournews.utils;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import okhttp3.*;
 import sun.misc.BASE64Encoder;
@@ -21,7 +22,43 @@ public class PushUtil {
     private PushUtil() {
     }
 
-    public static String pushNewToAll(String title, String text, String content) {
+    public static String pushNewToAll(String text, String extra) {
+        return connectJiGuangServer(getJiGuangJSON(text, extra));
+    }
+
+    public static void pushChildCommentToUser(String uid, String otherUserName, String extra) {
+        connectJiGuangServer(getJiGuangJSON(uid, "用户 " + otherUserName + " 回复了您的评论", extra));
+    }
+
+    private static JSONObject getJiGuangJSON(String uid, String text, String extra) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("platform", "all");
+
+        JSONArray aliasArray = new JSONArray();
+        aliasArray.add(uid);
+        JSONObject aliasJSON = new JSONObject();
+        aliasJSON.put("alias", aliasArray);
+        jsonObject.put("audience", aliasJSON);
+
+        JSONObject notifyJSON = new JSONObject();
+        JSONObject androidJSON = new JSONObject();
+
+        androidJSON.put("alert", text);
+        androidJSON.put("title", "OurNews");
+
+        JSONObject extraJSON = new JSONObject();
+        extraJSON.put("pushContent", extra);
+
+        androidJSON.put("extras", extraJSON);
+
+        notifyJSON.put("android", androidJSON);
+
+        jsonObject.put("notification", notifyJSON);
+
+        return jsonObject;
+    }
+
+    private static JSONObject getJiGuangJSON(String text, String extra) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("platform", "all");
         jsonObject.put("audience", "all");
@@ -30,10 +67,10 @@ public class PushUtil {
         JSONObject androidJSON = new JSONObject();
 
         androidJSON.put("alert", text);
-        androidJSON.put("title", title);
+        androidJSON.put("title", "OurNews");
 
         JSONObject extraJSON = new JSONObject();
-        extraJSON.put("pushContent", content);
+        extraJSON.put("pushContent", extra);
 
         androidJSON.put("extras", extraJSON);
 
@@ -41,6 +78,10 @@ public class PushUtil {
 
         jsonObject.put("notification", notifyJSON);
 
+        return jsonObject;
+    }
+
+    private static String connectJiGuangServer(JSONObject jsonObject) {
         OkHttpClient client = OkHttpUtil.getOkHttpClient();
         RequestBody body = RequestBody.create(MediaType.parse(OkHttpUtil.MEDIA_TYPE), jsonObject.toString());
         Request request = new Request.Builder()
@@ -52,12 +93,11 @@ public class PushUtil {
             Response response = client.newCall(request).execute();
             return ResultUtil.getSuccessJSON(JSONObject.fromObject(response.body().string())).toString();
         } catch (IOException e) {
-            e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.JIGUANG_INTERNET_ERROR).toString();
         }
     }
 
-    public static String getBase64(String str) {
+    private static String getBase64(String str) {
         try {
             byte[] b = str.getBytes("utf-8");
             return new BASE64Encoder().encode(b);

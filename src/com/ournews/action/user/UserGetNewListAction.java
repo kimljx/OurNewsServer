@@ -12,11 +12,15 @@ public class UserGetNewListAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        String type = request.getParameter("type");
-        String page = request.getParameter("page");
-        String size = request.getParameter("size");
-        String sort = request.getParameter("sort");
+        if (isPost()) {
+            String type = request.getParameter("type");
+            String page = request.getParameter("page");
+            String size = request.getParameter("size");
+            String sort = request.getParameter("sort");
 
-        sendJSON(new NewServiceImpl().getTypeNew(type, page, size, sort));
+            sendJSON(new NewServiceImpl().getTypeNew(type, page, size, sort));
+        } else {
+            sendJSON(getNoPostResponse());
+        }
     }
 }
