@@ -8,7 +8,7 @@ public class Constant {
 
     public static final long CONNECT_OUT_TIME = 2 * 60 * 1000;
 
-    public static boolean IS_DEBUG = true;
+    public static boolean IS_DEBUG = false;
 
     // 服务器错误
     public static final int SERVER_ERROR = 100;
