@@ -19,33 +19,23 @@ public class MyUtils {
     }
 
     public static boolean isLoginName(String str) {
-        if (str != null && str.length() > 5 && str.length() < 13)
-            return true;
-        return false;
+        return str != null && str.length() > 5 && str.length() < 13;
     }
 
     public static boolean isPassword(String str) {
-        if (str != null && str.length() > 7 && str.length() < 16)
-            return true;
-        return false;
+        return str != null && str.length() > 7 && str.length() < 17;
     }
 
     public static boolean isToken(String str) {
-        if (str != null && str.length() == 32)
-            return true;
-        return false;
+        return str != null && str.length() == 32;
     }
 
     public static boolean isVarchar(String str) {
-        if (isNull(str))
-            return false;
-        return str.length() <= 50;
+        return !isNull(str) && str.length() <= 50;
     }
 
     public static boolean isTime(String time) {
-        if (!isNumber(time))
-            return false;
-        return Math.abs(Long.valueOf(time) - System.currentTimeMillis()) <= 2 * 60 * 1000;
+        return isNumber(time) && Math.abs(Long.valueOf(time) - System.currentTimeMillis()) <= 2 * 60 * 1000;
     }
 
     public static boolean isNumber(String str) {
@@ -60,11 +50,7 @@ public class MyUtils {
     }
 
     public static boolean isNumber(String str, int startNum, int endNum) {
-        if (isNull(str))
-            return false;
-        if (!isNumber(str) || (isNumber(str) && (Integer.valueOf(str) < startNum || Integer.valueOf(str) > endNum)))
-            return false;
-        return true;
+        return !isNull(str) && isNumber(str) && Integer.valueOf(str) >= startNum && Integer.valueOf(str) <= endNum;
     }
 
     public static boolean isPhoto(String str, File file) {

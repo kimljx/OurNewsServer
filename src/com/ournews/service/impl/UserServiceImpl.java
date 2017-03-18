@@ -13,7 +13,7 @@ import com.ournews.utils.ResultUtil;
 public class UserServiceImpl implements UserService {
     @Override
     public String register(String loginName, String password, String time, String key) {
-        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time)) {
+        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time)||MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_LENGTH_ERROR).toString();
