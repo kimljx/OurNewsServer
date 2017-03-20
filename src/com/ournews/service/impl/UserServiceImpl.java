@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
                 birthday = null;
             if (MyUtils.isNull(photo))
                 photo = null;
-            return new UserDaoImpl().changeInfo(id, token, nickName, sex, sign, birthday, photo);
+            return new UserDaoImpl().changeManagerInfo(id, nickName, sex, sign, birthday, photo);
         }
     }
 
@@ -171,7 +171,7 @@ public class UserServiceImpl implements UserService {
                 birthday = null;
             if (MyUtils.isNull(photo))
                 photo = null;
-            return new UserDaoImpl().changeInfo(id, token, nickName, sex, sign, birthday, photo);
+            return new UserDaoImpl().changeInfo(id, nickName, sex, sign, birthday, photo);
         }
     }
 }

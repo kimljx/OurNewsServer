@@ -12,7 +12,7 @@ public interface UserDao {
 
     int managerTokenIsTrue(String id, String token);
 
-    String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo);
+    String changeManagerInfo(String id, String nickName, String sex, String sign, String birthday, String photo);
 
     String register(String loginName, String password);
 
@@ -22,5 +22,5 @@ public interface UserDao {
 
     int tokenIsTrue(String id, String token);
 
-    String changeInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo);
+    String changeInfo(String id, String nickName, String sex, String sign, String birthday, String photo);
 }

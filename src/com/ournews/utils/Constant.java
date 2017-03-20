@@ -72,7 +72,7 @@ public class Constant {
     // TOKEN过期
     public static final int TOKEN_TIME_OUT = 10005;
     // 新增新闻失败
-    public static final int ADD_NEWS_ERROR = 10001;
+    public static final int ADD_NEWS_ERROR = 10010;
     // 连接激光服务器失败
-    public static final int JIGUANG_INTERNET_ERROR = 10002;
+    public static final int JIGUANG_INTERNET_ERROR = 10020;
 }

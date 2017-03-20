@@ -211,7 +211,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo) {
+    public String changeManagerInfo(String id, String nickName, String sex, String sign, String birthday, String photo) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String sql = "UPDATE manager_user SET ";
@@ -409,7 +409,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String changeInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo) {
+    public String changeInfo(String id, String nickName, String sex, String sign, String birthday, String photo) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String sql = "UPDATE user SET ";
