@@ -12,14 +12,56 @@ import com.ournews.utils.ResultUtil;
  */
 public class UserServiceImpl implements UserService {
     @Override
+    public String getCode(String phone, String time, String key) {
+        if (MyUtils.isNull(phone) || MyUtils.isNull(time) || MyUtils.isNull(key)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        } else if (!MyUtils.isPhone(phone)) {
+            return ResultUtil.getErrorJSON(Constant.PHONE_NUMBER_ERROR).toString();
+        } else if (!MyUtils.isTime(time)) {
+            return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
+        } else if (!MD5Util.getMD5(Constant.KEY + phone + time).equals(key)) {
+            return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
+        }
+        return new UserDaoImpl().getCode(phone);
+    }
+
+    @Override
+    public String registerManager(String phone, String password, String code, String time, String key) {
+        if (MyUtils.isNull(phone) || MyUtils.isNull(password) || !MyUtils.isNumber(code) || MyUtils.isNull(time) || MyUtils.isNull(key)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        } else if (!MyUtils.isPhone(phone)) {
+            return ResultUtil.getErrorJSON(Constant.PHONE_NUMBER_ERROR).toString();
+        } else if (!MyUtils.isPassword(password)) {
+            return ResultUtil.getErrorJSON(Constant.PASSWORD_LENGTH_ERROR).toString();
+        } else if (!MyUtils.isTime(time)) {
+            return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
+        } else if (!MD5Util.getMD5(Constant.KEY + password + time).equals(key)) {
+            return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
+        }
+        return new UserDaoImpl().registerManager(phone, password, code);
+    }
+
+    @Override
+    public String loginManager(String phone, String password, String time) {
+        if (MyUtils.isNull(phone) || MyUtils.isNull(password) || MyUtils.isNull(time)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        } else if (!MyUtils.isPhone(phone)) {
+            return ResultUtil.getErrorJSON(Constant.PHONE_NUMBER_ERROR).toString();
+        } else if (!MyUtils.isTime(time)) {
+            return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
+        }
+        return null;
+    }
+
+    @Override
     public String register(String loginName, String password, String time, String key) {
-        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time)||MyUtils.isNull(key)) {
+        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNull(time) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_LENGTH_ERROR).toString();
         } else if (!MyUtils.isPassword(password)) {
             return ResultUtil.getErrorJSON(Constant.PASSWORD_LENGTH_ERROR).toString();
-        } else if ((System.currentTimeMillis() - Long.valueOf(time)) > Constant.CONNECT_OUT_TIME) {
+        } else if (!MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         } else if (!MD5Util.getMD5(Constant.KEY + time).equals(key)) {
             return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();

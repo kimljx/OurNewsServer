@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by Misutesu on 2017/1/13 0013.
@@ -16,6 +17,10 @@ import java.util.List;
 public class MyUtils {
     public static boolean isNull(String str) {
         return str == null || str.equals("") || str.equals("null");
+    }
+
+    public static boolean isPhone(String str){
+        return Pattern.matches("(\\+\\d+)?1[3458]\\d{9}$", str);
     }
 
     public static boolean isLoginName(String str) {

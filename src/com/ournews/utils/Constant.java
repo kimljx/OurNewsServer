@@ -61,6 +61,14 @@ public class Constant {
     public static final int UPLOAD_FILE_TOO_BIG = 100002;
 
 
+    // 手机号格式错误
+    public static final int PHONE_NUMBER_ERROR = 10001;
+    // 请先获取验证码
+    public static final int PLEASE_GET_CODE_FIRST = 10002;
+    // 验证码过期
+    public static final int MESSAGE_CODE_TIME_OUT = 10003;
+    // 验证码错误
+    public static final int MESSAGE_CODE_ERROR = 10004;
     // 新增新闻失败
     public static final int ADD_NEWS_ERROR = 10001;
     // 连接激光服务器失败

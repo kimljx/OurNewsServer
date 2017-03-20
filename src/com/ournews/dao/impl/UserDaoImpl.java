@@ -1,10 +1,7 @@
 package com.ournews.dao.impl;
 
 import com.ournews.dao.UserDao;
-import com.ournews.utils.Constant;
-import com.ournews.utils.MD5Util;
-import com.ournews.utils.ResultUtil;
-import com.ournews.utils.SQLManager;
+import com.ournews.utils.*;
 import net.sf.json.JSONObject;
 
 import java.sql.Connection;
@@ -17,6 +14,105 @@ import java.util.UUID;
  * Created by Misutesu on 2017/1/15 0015.
  */
 public class UserDaoImpl implements UserDao {
+
+    @Override
+    public String getCode(String phone) {
+        int code = CodeUtil.getCode(phone);
+        if (code != -1) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            String sql = "INSERT INTO message_code ( phone , code , create_time ) VALUES ( ? , ? , ? )";
+            try {
+                connection = SQLManager.getConnection();
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, phone);
+                preparedStatement.setInt(2, code);
+                preparedStatement.setLong(3, System.currentTimeMillis());
+                if (preparedStatement.executeUpdate() == 1) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("phone", phone);
+                    jsonObject.put("code", code);
+                    return ResultUtil.getSuccessJSON(jsonObject).toString();
+                }
+                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+            } finally {
+                SQLManager.closePreparedStatement(preparedStatement);
+                SQLManager.closeConnection(connection);
+            }
+        }
+        return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+    }
+
+    @Override
+    public String registerManager(String phone, String password, String code) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),code,create_time FROM message_code WHERE phone = \"" + phone + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) != 0) {
+                        long time = System.currentTimeMillis() - resultSet.getLong(3);
+                        if (Constant.IS_DEBUG || time < 5 * 60 * 1000) {
+                            if (code.equals(resultSet.getString(2))) {
+                                SQLManager.closeResultSet(resultSet);
+                                SQLManager.closePreparedStatement(preparedStatement);
+                                sql = "INSERT INTO user ( login_name , password , nick_name , manager ) VALUES ( ? , ? , ? ,? )";
+                                preparedStatement = connection.prepareStatement(sql);
+                                preparedStatement.setString(1, phone);
+                                preparedStatement.setString(2, password);
+                                preparedStatement.setString(3, phone);
+                                preparedStatement.setInt(4, 1);
+                                if (preparedStatement.executeUpdate() == 1) {
+                                    return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+                                }
+                                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                            }
+                            return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_ERROR).toString();
+                        }
+                        return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_TIME_OUT).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.PLEASE_GET_CODE_FIRST).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String loginManager(String phone, String password, String time) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),password,id,nick_name,sex,photo FROM user WHERE phone = \"" + phone + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
 
     @Override
     public String register(String loginName, String password) {
@@ -79,8 +175,9 @@ public class UserDaoImpl implements UserDao {
                         return ResultUtil.getErrorJSON(Constant.PASSWORD_ERROR).toString();
                     }
                 }
+                return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
             }
-            return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();

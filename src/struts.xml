@@ -85,6 +85,15 @@
     </package>
 
     <package name="ManagerRequest" extends="json-default">
+        <action name="getCode" method="action" class="com.ournews.action.manager.ManagerGetCodeAction">
+            <result type="json"/>
+        </action>
+        <action name="registerManager" method="action" class="com.ournews.action.manager.ManagerRegisterAction">
+            <result type="json"/>
+        </action>
+        <action name="loginManager" method="action" class="com.ournews.action.manager.ManagerLoginAction">
+            <result type="json"/>
+        </action>
         <action name="setMode" method="action" class="com.ournews.action.manager.ManagerSetModeAction">
             <result type="json"/>
         </action>
