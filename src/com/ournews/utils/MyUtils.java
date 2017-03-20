@@ -31,8 +31,35 @@ public class MyUtils {
         return str != null && str.length() > 7 && str.length() < 17;
     }
 
-    public static boolean isToken(String str) {
-        return str != null && str.length() == 32;
+    public static boolean isBirthday(String str) {
+        if (isNumber(str) && str.length() == 8) {
+            String yearStr = str.substring(0, 4);
+            String monthStr = str.substring(4, 6);
+            String dayStr = str.substring(6, 8);
+            int year = Integer.valueOf(yearStr);
+            int month = Integer.valueOf(monthStr);
+            int day = Integer.valueOf(dayStr);
+            if (year >= 1800 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+                if (month == 4 || month == 6 || month == 9 || month == 11) {
+                    if (day <= 30) {
+                        return true;
+                    }
+                } else if (month == 2) {
+                    if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+                        if (day <= 29) {
+                            return true;
+                        }
+                    } else {
+                        if (day <= 28) {
+                            return true;
+                        }
+                    }
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean isVarchar(String str) {

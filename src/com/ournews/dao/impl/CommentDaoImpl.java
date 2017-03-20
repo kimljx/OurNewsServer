@@ -62,7 +62,7 @@ public class CommentDaoImpl implements CommentDao {
         ResultSet resultSet = null;
         ResultSet resultSetNum = null;
         ResultSet resultSetChild = null;
-        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo " +
+        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.sign,u.birthday,u.photo " +
                 "FROM comment AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.nid = \"" + nid + "\" AND u.state = 1 AND c.state = 1";
         if (sort.equals("1"))
             sql = sql + " ORDER BY c.id DESC";
@@ -84,7 +84,9 @@ public class CommentDaoImpl implements CommentDao {
                     userJSON.put("id", resultSet.getLong(4));
                     userJSON.put("nick_name", resultSet.getString(5));
                     userJSON.put("sex", resultSet.getInt(6));
-                    userJSON.put("photo", resultSet.getString(7));
+                    userJSON.put("sign", resultSet.getString(7));
+                    userJSON.put("birthday", resultSet.getString(8));
+                    userJSON.put("photo", resultSet.getString(9));
                     jsonObject.put("user", userJSON);
 
                     SQLManager.closePreparedStatement(preparedStatement);
@@ -98,7 +100,7 @@ public class CommentDaoImpl implements CommentDao {
                             SQLManager.closeResultSet(resultSetNum);
                             SQLManager.closePreparedStatement(preparedStatement);
 
-                            String sqlChild = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo" +
+                            String sqlChild = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.sign,u.birthday,u.photo" +
                                     " FROM comment_child AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.cid = \""
                                     + cid + "\" AND c.state = 1 AND u.state = 1 limit 0 , 3";
                             preparedStatement = connection.prepareStatement(sqlChild);
@@ -115,7 +117,9 @@ public class CommentDaoImpl implements CommentDao {
                                     childUserJSON.put("id", resultSetChild.getLong(4));
                                     childUserJSON.put("nick_name", resultSetChild.getString(5));
                                     childUserJSON.put("sex", resultSetChild.getInt(6));
-                                    childUserJSON.put("photo", resultSetChild.getString(7));
+                                    childUserJSON.put("sign", resultSetChild.getString(7));
+                                    childUserJSON.put("birthday", resultSetChild.getString(8));
+                                    childUserJSON.put("photo", resultSetChild.getString(9));
                                     childJSON.put("user", childUserJSON);
                                     childArray.add(childJSON);
                                 }
@@ -160,7 +164,7 @@ public class CommentDaoImpl implements CommentDao {
         ResultSet resultSetNum = null;
         ResultSet resultSetUser = null;
         ResultSet resultSetChild = null;
-        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo " +
+        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.sign,u.birthday,u.photo " +
                 "FROM comment AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.nid = \"" + nid + "\" AND u.state = 1 AND c.state = 1";
         if (sort.equals("1"))
             sql = sql + " ORDER BY c.id DESC";
@@ -182,7 +186,9 @@ public class CommentDaoImpl implements CommentDao {
                     userJSON.put("id", resultSet.getLong(4));
                     userJSON.put("nick_name", resultSet.getString(5));
                     userJSON.put("sex", resultSet.getInt(6));
-                    userJSON.put("photo", resultSet.getString(7));
+                    userJSON.put("sign", resultSet.getString(7));
+                    userJSON.put("birthday", resultSet.getString(8));
+                    userJSON.put("photo", resultSet.getString(9));
                     jsonObject.put("user", userJSON);
 
                     SQLManager.closePreparedStatement(preparedStatement);
@@ -202,7 +208,7 @@ public class CommentDaoImpl implements CommentDao {
                                     SQLManager.closeResultSet(resultSetNum);
                                     SQLManager.closePreparedStatement(preparedStatement);
 
-                                    String sqlChild = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo" +
+                                    String sqlChild = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.sign,u.birthday,u.photo" +
                                             " FROM comment_child AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.cid = \""
                                             + cid + "\" AND c.state = 1 AND u.state = 1 limit 0 , 3";
                                     preparedStatement = connection.prepareStatement(sqlChild);
@@ -219,7 +225,9 @@ public class CommentDaoImpl implements CommentDao {
                                             childUserJSON.put("id", resultSetChild.getLong(4));
                                             childUserJSON.put("nick_name", resultSetChild.getString(5));
                                             childUserJSON.put("sex", resultSetChild.getInt(6));
-                                            childUserJSON.put("photo", resultSetChild.getString(7));
+                                            childUserJSON.put("sign", resultSetChild.getString(7));
+                                            childUserJSON.put("birthday", resultSetChild.getString(8));
+                                            childUserJSON.put("photo", resultSetChild.getString(9));
                                             childJSON.put("user", childUserJSON);
                                             childArray.add(childJSON);
                                         }
@@ -369,7 +377,7 @@ public class CommentDaoImpl implements CommentDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.photo " +
+        String sql = "SELECT c.id,c.content,c.create_time,u.id,u.nick_name,u.sex,u.sign,u.birthday,u.photo " +
                 "FROM comment_child AS c LEFT JOIN user AS u ON c.uid = u.id WHERE c.cid = \"" + cid + "\" AND u.state = 1 AND c.state = 1";
         if (sort.equals("1"))
             sql = sql + " ORDER BY c.id DESC";
@@ -390,6 +398,8 @@ public class CommentDaoImpl implements CommentDao {
                     userJSON.put("nick_name", resultSet.getString(5));
                     userJSON.put("sex", resultSet.getInt(6));
                     userJSON.put("photo", resultSet.getString(7));
+                    userJSON.put("sign", resultSet.getString(8));
+                    userJSON.put("birthday", resultSet.getString(9));
                     jsonObject.put("user", userJSON);
                     jsonArray.add(jsonObject);
                 }

@@ -100,12 +100,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changeInfo(String id, String token, String nickName, String sex, String photo) {
+    public String changeInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo) {
         if (!MyUtils.isNumber(id) || MyUtils.isNull(token)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
-        } else if (MyUtils.isNull(nickName) && MyUtils.isNull(sex) && MyUtils.isNull(photo)) {
+        } else if (MyUtils.isNull(nickName) && MyUtils.isNull(sex)
+                && MyUtils.isNull(sign) && MyUtils.isNull(birthday)
+                && MyUtils.isNull(photo)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else {
+            if ((!MyUtils.isNull(sex) && !MyUtils.isNumber(sex, 1, 2))
+                    || (!MyUtils.isNull(sign) && sign.length() <= 50)
+                    || (!MyUtils.isNull(birthday) && !MyUtils.isBirthday(birthday))) {
+                return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+            }
             int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);
             if (isTrueToken == 1) {
                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
@@ -120,9 +127,13 @@ public class UserServiceImpl implements UserService {
                 nickName = null;
             if (MyUtils.isNull(sex))
                 sex = null;
+            if (MyUtils.isNull(sign))
+                sign = null;
+            if (MyUtils.isNull(birthday))
+                birthday = null;
             if (MyUtils.isNull(photo))
                 photo = null;
-            return new UserDaoImpl().changeInfo(id, token, nickName, sex, photo);
+            return new UserDaoImpl().changeInfo(id, token, nickName, sex, sign, birthday, photo);
         }
     }
 }

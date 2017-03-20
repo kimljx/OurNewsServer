@@ -17,9 +17,11 @@ public class UserChangeInfoAction extends BaseAction {
             String token = request.getParameter("token");
             String nickName = request.getParameter("nick_name");
             String sex = request.getParameter("sex");
+            String sign = request.getParameter("sign");
+            String birthday = request.getParameter("birthday");
             String photo = request.getParameter("photo");
 
-            sendJSON(new UserServiceImpl().changeInfo(id, token, nickName, sex, photo));
+            sendJSON(new UserServiceImpl().changeInfo(id, token, nickName, sex, sign, birthday, photo));
         } else {
             sendJSON(getNoPostResponse());
         }

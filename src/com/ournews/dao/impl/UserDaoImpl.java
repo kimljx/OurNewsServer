@@ -143,7 +143,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(1),password,id,nick_name,sex,photo FROM user WHERE login_name = \"" + loginName + "\"";
+        String sql = "SELECT count(1),password,id,nick_name,sex,sign,birthday,photo FROM user WHERE login_name = \"" + loginName + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -157,10 +157,12 @@ public class UserDaoImpl implements UserDao {
 
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("id", resultSet.getLong(3));
+                            jsonObject.put("login_name", loginName);
                             jsonObject.put("nick_name", resultSet.getString(4));
                             jsonObject.put("sex", resultSet.getString(5));
-                            jsonObject.put("photo", resultSet.getString(6));
-                            jsonObject.put("login_name", loginName);
+                            jsonObject.put("sign", resultSet.getString(6));
+                            jsonObject.put("birthday", resultSet.getString(7));
+                            jsonObject.put("photo", resultSet.getString(8));
                             jsonObject.put("token", token);
 
                             sql = "UPDATE user SET token = \"" + token + "\" WHERE login_name =\"" + loginName + "\"";
@@ -193,7 +195,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT state,login_name,nick_name,sex,photo FROM user WHERE id = \"" + id + "\"";
+        String sql = "SELECT state,login_name,nick_name,sex,sign,birthday,photo FROM user WHERE id = \"" + id + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -201,14 +203,14 @@ public class UserDaoImpl implements UserDao {
             if (resultSet != null) {
                 if (resultSet.next()) {
                     if (resultSet.getInt(1) == 1) {
-
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("id", id);
                         jsonObject.put("login_name", resultSet.getString(2));
                         jsonObject.put("nick_name", resultSet.getString(3));
                         jsonObject.put("sex", resultSet.getInt(4));
-                        jsonObject.put("photo", resultSet.getString(5));
-
+                        jsonObject.put("sign", resultSet.getString(5));
+                        jsonObject.put("birthday", resultSet.getString(6));
+                        jsonObject.put("photo", resultSet.getString(7));
                         return ResultUtil.getSuccessJSON(jsonObject).toString();
                     }
                     return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
@@ -261,7 +263,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String changeInfo(String id, String token, String nickName, String sex, String photo) {
+    public String changeInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String sql = "UPDATE user SET ";
@@ -274,6 +276,18 @@ public class UserDaoImpl implements UserDao {
             if (had)
                 sql = sql + ",";
             sql = sql + "sex=\"" + sex + "\"";
+            had = true;
+        }
+        if (sign != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "sign=\"" + sign + "\"";
+            had = true;
+        }
+        if (birthday != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "birthday=\"" + birthday + "\"";
             had = true;
         }
         if (photo != null) {
