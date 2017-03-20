@@ -13,7 +13,6 @@ public class ManagerRegisterAction extends BaseAction {
     public void action() throws IOException {
         if (isPost()) {
             String phone = request.getParameter("phone");
-            String password = request.getParameter("password");
             String code = request.getParameter("code");
             String time = request.getParameter("time");
             String key = request.getParameter("key");
