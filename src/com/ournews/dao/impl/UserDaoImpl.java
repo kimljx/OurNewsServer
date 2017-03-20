@@ -211,6 +211,56 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String sql = "UPDATE manager_user SET ";
+        boolean had = false;
+        if (nickName != null) {
+            sql = sql + "nick_name =\"" + nickName + "\" ";
+            had = true;
+        }
+        if (sex != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "sex= \"" + sex + "\" ";
+            had = true;
+        }
+        if (sign != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "sign= \"" + sign + "\" ";
+            had = true;
+        }
+        if (birthday != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "birthday= \"" + birthday + "\" ";
+            had = true;
+        }
+        if (photo != null) {
+            if (had)
+                sql = sql + ",";
+            sql = sql + "photo= \"" + photo + "\" ";
+        }
+        sql = sql + " WHERE id = \"" + id + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            if (preparedStatement.executeUpdate() == 1) {
+                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.CHANGE_INFO_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
     public String register(String loginName, String password) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

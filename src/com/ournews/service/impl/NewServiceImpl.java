@@ -13,26 +13,34 @@ import com.ournews.utils.ResultUtil;
 public class NewServiceImpl implements NewService {
 
     @Override
-    public String addNew(String title, String cover, String abstractContent, String content, String type) {
-        if (MyUtils.isNull(title) || MyUtils.isNull(cover) || MyUtils.isNull(abstractContent)
+    public String addNew(String mid, String token, String title, String cover, String abstractContent, String content, String type) {
+        if (!MyUtils.isNumber(mid) || MyUtils.isNull(token) || MyUtils.isNull(title)
+                || MyUtils.isNull(cover) || MyUtils.isNull(abstractContent)
                 || MyUtils.isNull(content) || !MyUtils.isNumber(type, 0, 6)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
-        } else {
-            return new NewDaoImpl().addNews(title, cover, abstractContent, content, type);
         }
+        int isTrueToken = new UserDaoImpl().managerTokenIsTrue(mid, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_TIME_OUT).toString();
+        }
+        return new NewDaoImpl().addNews(title, cover, abstractContent, content, type);
     }
 
     @Override
     public String getHomeNew(String type) {
         if (MyUtils.isNull(type)) {
             return new NewDaoImpl().getHomeNews(null);
-        } else {
-            if (!MyUtils.isNumber(type, 1, 6)) {
-                return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
-            } else {
-                return new NewDaoImpl().getHomeNews(type);
-            }
         }
+        if (!MyUtils.isNumber(type, 1, 6)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        return new NewDaoImpl().getHomeNews(type);
     }
 
     @Override

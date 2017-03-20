@@ -69,6 +69,8 @@ public class Constant {
     public static final int MESSAGE_CODE_TIME_OUT = 10003;
     // 验证码错误
     public static final int MESSAGE_CODE_ERROR = 10004;
+    // TOKEN过期
+    public static final int TOKEN_TIME_OUT = 10005;
     // 新增新闻失败
     public static final int ADD_NEWS_ERROR = 10001;
     // 连接激光服务器失败

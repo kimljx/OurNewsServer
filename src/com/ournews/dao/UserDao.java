@@ -12,6 +12,8 @@ public interface UserDao {
 
     int managerTokenIsTrue(String id, String token);
 
+    String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo);
+
     String register(String loginName, String password);
 
     String login(String loginName, String password, String time);
