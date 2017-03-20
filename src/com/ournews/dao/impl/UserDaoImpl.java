@@ -71,7 +71,43 @@ public class UserDaoImpl implements UserDao {
                                 preparedStatement.setString(3, phone);
                                 preparedStatement.setInt(4, 1);
                                 if (preparedStatement.executeUpdate() == 1) {
-                                    return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+                                    SQLManager.closeResultSet(resultSet);
+                                    SQLManager.closePreparedStatement(preparedStatement);
+                                    sql = "SELECT count(1),id,nick_name,sex,sign,birthday,photo FROM user WHERE phone = \"" + phone + "\"";
+                                    preparedStatement = connection.prepareStatement(sql);
+                                    resultSet = preparedStatement.executeQuery();
+                                    if (resultSet != null) {
+                                        if (resultSet.next()) {
+                                            if (resultSet.getInt(1) != 0) {
+                                                String md5 = MD5Util.getMD5(Constant.KEY + resultSet.getString(2) + time);
+                                                if (password.equals(md5)) {
+                                                    String token = UUID.randomUUID().toString().replace("-", "");
+
+                                                    JSONObject jsonObject = new JSONObject();
+                                                    jsonObject.put("id", resultSet.getLong(3));
+                                                    jsonObject.put("login_name", phone);
+                                                    jsonObject.put("nick_name", resultSet.getString(4));
+                                                    jsonObject.put("sex", resultSet.getString(5));
+                                                    jsonObject.put("sign", resultSet.getString(6));
+                                                    jsonObject.put("birthday", resultSet.getString(7));
+                                                    jsonObject.put("photo", resultSet.getString(8));
+                                                    jsonObject.put("token", token);
+
+                                                    sql = "UPDATE user SET token = \"" + token + "\" login_time = \"" + System.currentTimeMillis() + " WHERE login_name =\"" + phone + "\"";
+                                                    SQLManager.closePreparedStatement(preparedStatement);
+                                                    preparedStatement = connection.prepareStatement(sql);
+                                                    int updateNum = preparedStatement.executeUpdate();
+                                                    if (updateNum == 1) {
+                                                        return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                                    }
+                                                    return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                                                }
+                                                return ResultUtil.getErrorJSON(Constant.PASSWORD_ERROR).toString();
+                                            }
+                                        }
+                                        return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
+                                    }
+                                    return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                                 }
                                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                             }
@@ -98,12 +134,43 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(1),password,id,nick_name,sex,photo FROM user WHERE phone = \"" + phone + "\"";
+        String sql = "SELECT count(1),password,id,nick_name,sex,sign,birthday,photo FROM user WHERE phone = \"" + phone + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
-            return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) != 0) {
+                        String md5 = MD5Util.getMD5(Constant.KEY + resultSet.getString(2) + time);
+                        if (password.equals(md5)) {
+                            String token = UUID.randomUUID().toString().replace("-", "");
+
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("id", resultSet.getLong(3));
+                            jsonObject.put("login_name", phone);
+                            jsonObject.put("nick_name", resultSet.getString(4));
+                            jsonObject.put("sex", resultSet.getString(5));
+                            jsonObject.put("sign", resultSet.getString(6));
+                            jsonObject.put("birthday", resultSet.getString(7));
+                            jsonObject.put("photo", resultSet.getString(8));
+                            jsonObject.put("token", token);
+
+                            sql = "UPDATE user SET token = \"" + token + "\" login_time = \"" + System.currentTimeMillis() + " WHERE login_name =\"" + phone + "\"";
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            preparedStatement = connection.prepareStatement(sql);
+                            int updateNum = preparedStatement.executeUpdate();
+                            if (updateNum == 1) {
+                                return ResultUtil.getSuccessJSON(jsonObject).toString();
+                            }
+                            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                        }
+                        return ResultUtil.getErrorJSON(Constant.PASSWORD_ERROR).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
