@@ -10,5 +10,5 @@ public interface UserService {
 
     String checkLogin(String id, String token);
 
-    String changeInfo(String id, String token, String nickName, String sex, String photo);
+    String changeInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo);
 }
