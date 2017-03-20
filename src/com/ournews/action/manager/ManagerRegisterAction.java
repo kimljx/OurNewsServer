@@ -18,7 +18,7 @@ public class ManagerRegisterAction extends BaseAction {
             String time = request.getParameter("time");
             String key = request.getParameter("key");
 
-            sendJSON(new UserServiceImpl().registerManager(phone, password, code, time, key));
+            sendJSON(new UserServiceImpl().registerManager(phone, code, time, key));
         } else {
             sendJSON(getNoPostResponse());
         }

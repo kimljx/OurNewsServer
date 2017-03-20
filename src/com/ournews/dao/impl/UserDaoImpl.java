@@ -47,7 +47,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String registerManager(String phone, String password, String code) {
+    public String registerManager(String phone, String code) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -61,53 +61,27 @@ public class UserDaoImpl implements UserDao {
                     if (resultSet.getInt(1) != 0) {
                         long time = System.currentTimeMillis() - resultSet.getLong(3);
                         if (Constant.IS_DEBUG || time < 5 * 60 * 1000) {
-                            if (code.equals(resultSet.getString(2))) {
+                            if (Constant.IS_DEBUG || code.equals(resultSet.getString(2))) {
                                 SQLManager.closeResultSet(resultSet);
                                 SQLManager.closePreparedStatement(preparedStatement);
-                                sql = "INSERT INTO user ( login_name , password , nick_name , manager ) VALUES ( ? , ? , ? ,? )";
+                                sql = "INSERT INTO manager_user ( phone  , nick_name , token , login_time ) VALUES ( ? , ? , ? ,? )";
+                                String token = UUID.randomUUID().toString().replace("-", "");
                                 preparedStatement = connection.prepareStatement(sql);
                                 preparedStatement.setString(1, phone);
-                                preparedStatement.setString(2, password);
-                                preparedStatement.setString(3, phone);
-                                preparedStatement.setInt(4, 1);
+                                preparedStatement.setString(2, phone);
+                                preparedStatement.setString(3, token);
+                                preparedStatement.setLong(4, System.currentTimeMillis());
                                 if (preparedStatement.executeUpdate() == 1) {
-                                    SQLManager.closeResultSet(resultSet);
-                                    SQLManager.closePreparedStatement(preparedStatement);
-                                    sql = "SELECT count(1),id,nick_name,sex,sign,birthday,photo FROM user WHERE phone = \"" + phone + "\"";
-                                    preparedStatement = connection.prepareStatement(sql);
-                                    resultSet = preparedStatement.executeQuery();
-                                    if (resultSet != null) {
-                                        if (resultSet.next()) {
-                                            if (resultSet.getInt(1) != 0) {
-                                                String md5 = MD5Util.getMD5(Constant.KEY + resultSet.getString(2) + time);
-                                                if (password.equals(md5)) {
-                                                    String token = UUID.randomUUID().toString().replace("-", "");
-
-                                                    JSONObject jsonObject = new JSONObject();
-                                                    jsonObject.put("id", resultSet.getLong(3));
-                                                    jsonObject.put("login_name", phone);
-                                                    jsonObject.put("nick_name", resultSet.getString(4));
-                                                    jsonObject.put("sex", resultSet.getString(5));
-                                                    jsonObject.put("sign", resultSet.getString(6));
-                                                    jsonObject.put("birthday", resultSet.getString(7));
-                                                    jsonObject.put("photo", resultSet.getString(8));
-                                                    jsonObject.put("token", token);
-
-                                                    sql = "UPDATE user SET token = \"" + token + "\" login_time = \"" + System.currentTimeMillis() + " WHERE login_name =\"" + phone + "\"";
-                                                    SQLManager.closePreparedStatement(preparedStatement);
-                                                    preparedStatement = connection.prepareStatement(sql);
-                                                    int updateNum = preparedStatement.executeUpdate();
-                                                    if (updateNum == 1) {
-                                                        return ResultUtil.getSuccessJSON(jsonObject).toString();
-                                                    }
-                                                    return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
-                                                }
-                                                return ResultUtil.getErrorJSON(Constant.PASSWORD_ERROR).toString();
-                                            }
-                                        }
-                                        return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
-                                    }
-                                    return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("id", resultSet.getLong(2));
+                                    jsonObject.put("phone", phone);
+                                    jsonObject.put("nick_name", phone);
+                                    jsonObject.put("sex", 0);
+                                    jsonObject.put("sign", "");
+                                    jsonObject.put("birthday", 0);
+                                    jsonObject.put("photo", "NoImage");
+                                    jsonObject.put("token", token);
+                                    return ResultUtil.getSuccessJSON(jsonObject).toString();
                                 }
                                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                             }
@@ -130,11 +104,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String loginManager(String phone, String password, String time) {
+    public String loginManager(String phone, String code) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(1),password,id,nick_name,sex,sign,birthday,photo FROM user WHERE phone = \"" + phone + "\"";
+        String sql = "SELECT count(1),code,create_time FROM message_code WHERE phone = \"" + phone + "\"";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -142,33 +116,51 @@ public class UserDaoImpl implements UserDao {
             if (resultSet != null) {
                 if (resultSet.next()) {
                     if (resultSet.getInt(1) != 0) {
-                        String md5 = MD5Util.getMD5(Constant.KEY + resultSet.getString(2) + time);
-                        if (password.equals(md5)) {
-                            String token = UUID.randomUUID().toString().replace("-", "");
+                        if (resultSet.getInt(1) != 0) {
+                            long time = System.currentTimeMillis() - resultSet.getLong(3);
+                            if (Constant.IS_DEBUG || time < 5 * 60 * 1000) {
+                                if (Constant.IS_DEBUG || code.equals(resultSet.getString(2))) {
+                                    SQLManager.closeResultSet(resultSet);
+                                    SQLManager.closePreparedStatement(preparedStatement);
+                                    sql = "SELECT count(1),id,nick_name,sex,sign,birthday,photo FROM manager_user WHERE phone = \"" + phone + "\"";
+                                    preparedStatement = connection.prepareStatement(sql);
+                                    resultSet = preparedStatement.executeQuery();
+                                    if (resultSet != null) {
+                                        if (resultSet.next()) {
+                                            if (resultSet.getInt(1) != 0) {
+                                                String token = UUID.randomUUID().toString().replace("-", "");
 
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("id", resultSet.getLong(3));
-                            jsonObject.put("login_name", phone);
-                            jsonObject.put("nick_name", resultSet.getString(4));
-                            jsonObject.put("sex", resultSet.getString(5));
-                            jsonObject.put("sign", resultSet.getString(6));
-                            jsonObject.put("birthday", resultSet.getString(7));
-                            jsonObject.put("photo", resultSet.getString(8));
-                            jsonObject.put("token", token);
+                                                JSONObject jsonObject = new JSONObject();
+                                                jsonObject.put("id", resultSet.getLong(2));
+                                                jsonObject.put("login_name", phone);
+                                                jsonObject.put("nick_name", resultSet.getString(3));
+                                                jsonObject.put("sex", resultSet.getString(4));
+                                                jsonObject.put("sign", resultSet.getString(5));
+                                                jsonObject.put("birthday", resultSet.getString(6));
+                                                jsonObject.put("photo", resultSet.getString(7));
+                                                jsonObject.put("token", token);
 
-                            sql = "UPDATE user SET token = \"" + token + "\" login_time = \"" + System.currentTimeMillis() + " WHERE login_name =\"" + phone + "\"";
-                            SQLManager.closePreparedStatement(preparedStatement);
-                            preparedStatement = connection.prepareStatement(sql);
-                            int updateNum = preparedStatement.executeUpdate();
-                            if (updateNum == 1) {
-                                return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                                sql = "UPDATE manager_user SET token = \"" + token + "\" , login_time = \"" + System.currentTimeMillis() + "\" WHERE login_name = \"" + phone + "\"";
+                                                SQLManager.closePreparedStatement(preparedStatement);
+                                                preparedStatement = connection.prepareStatement(sql);
+                                                int updateNum = preparedStatement.executeUpdate();
+                                                if (updateNum == 1) {
+                                                    return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                                }
+                                                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                                            }
+                                        }
+                                        return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
+                                    }
+                                    return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                                }
+                                return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_ERROR).toString();
                             }
-                            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                            return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_TIME_OUT).toString();
                         }
-                        return ResultUtil.getErrorJSON(Constant.PASSWORD_ERROR).toString();
                     }
                 }
-                return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_NO_EXIST).toString();
+                return ResultUtil.getErrorJSON(Constant.PLEASE_GET_CODE_FIRST).toString();
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
@@ -178,6 +170,43 @@ public class UserDaoImpl implements UserDao {
             SQLManager.closeResultSet(resultSet);
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public int managerTokenIsTrue(String id, String token) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),token,login_time FROM manager_user WHERE id = \"" + id + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) == 1) {
+                        if (!Constant.IS_DEBUG) {
+                            long time = System.currentTimeMillis() - resultSet.getLong(3);
+                            if (!token.equals(resultSet.getString(2))) {
+                                return 3;
+                            } else if (time > 24 * 60 * 60 * 1000) {
+                                return 4;
+                            }
+                        }
+                        return 5;
+                    }
+                }
+                return 2;
+            }
+            return 1;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return 1;
+        } finally {
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+            SQLManager.closeResultSet(resultSet);
         }
     }
 

@@ -6,9 +6,11 @@ package com.ournews.service;
 public interface UserService {
     String getCode(String phone, String time, String key);
 
-    String registerManager(String phone, String password, String code, String time, String key);
+    String registerManager(String phone, String code, String time, String key);
 
-    String loginManager(String phone, String password, String time);
+    String loginManager(String phone, String code, String time, String key);
+
+    String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo);
 
     String register(String loginName, String password, String time, String key);
 
