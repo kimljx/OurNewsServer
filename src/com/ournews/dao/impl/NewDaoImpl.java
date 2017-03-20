@@ -20,19 +20,20 @@ import java.util.List;
 public class NewDaoImpl implements NewDao {
 
     @Override
-    public String addNews(String title, String cover, String abstractContent, String content, String type) {
+    public String addNews(String mid, String title, String cover, String abstractContent, String content, String type) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String sql = "INSERT INTO news ( title , cover , abstract , content , create_time , type ) VALUES ( ? , ? , ? , ? , ? , ? )";
+        String sql = "INSERT INTO news ( mid , title , cover , abstract , content , create_time , type ) VALUES ( ? , ? , ? , ? , ? , ? )";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, title);
-            preparedStatement.setString(2, cover);
-            preparedStatement.setString(3, abstractContent);
-            preparedStatement.setString(4, content);
-            preparedStatement.setLong(5, System.currentTimeMillis());
-            preparedStatement.setString(6, type);
+            preparedStatement.setString(1, mid);
+            preparedStatement.setString(2, title);
+            preparedStatement.setString(3, cover);
+            preparedStatement.setString(4, abstractContent);
+            preparedStatement.setString(5, content);
+            preparedStatement.setLong(6, System.currentTimeMillis());
+            preparedStatement.setString(7, type);
             if (preparedStatement.executeUpdate() == 1) {
                 MyUtils.zipImage(new File(ServletActionContext.getServletContext().getRealPath("upload"), cover));
                 return ResultUtil.getSuccessJSON(new JSONObject()).toString();

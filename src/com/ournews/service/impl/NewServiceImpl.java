@@ -29,7 +29,7 @@ public class NewServiceImpl implements NewService {
         } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.TOKEN_TIME_OUT).toString();
         }
-        return new NewDaoImpl().addNews(title, cover, abstractContent, content, type);
+        return new NewDaoImpl().addNews(mid, title, cover, abstractContent, content, type);
     }
 
     @Override
