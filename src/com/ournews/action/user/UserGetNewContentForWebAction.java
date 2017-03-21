@@ -6,17 +6,16 @@ import com.ournews.service.impl.NewServiceImpl;
 import java.io.IOException;
 
 /**
- * Created by Misutesu on 2017/1/16 0016.
+ * Created by Administrator on 2017/3/21.
  */
-public class UserGetNewContentAction extends BaseAction {
-
+public class UserGetNewContentForWebAction extends BaseAction {
     @Override
     public void action() throws IOException {
         if (isPost()) {
             String uid = request.getParameter("uid");
             String nid = request.getParameter("nid");
 
-            sendJSON(new NewServiceImpl().getContent(uid, nid,1));
+            sendJSON(new NewServiceImpl().getContent(uid, nid, 2));
         } else {
             sendJSON(getNoPostResponse());
         }

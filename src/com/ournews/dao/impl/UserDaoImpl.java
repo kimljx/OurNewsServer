@@ -17,33 +17,46 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public String getCode(String phone) {
-        int code = CodeUtil.getCode(phone);
-        if (code != -1) {
-            Connection connection = null;
-            PreparedStatement preparedStatement = null;
-            String sql = "INSERT INTO message_code ( phone , code , create_time ) VALUES ( ? , ? , ? )";
-            try {
-                connection = SQLManager.getConnection();
-                preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, phone);
-                preparedStatement.setInt(2, code);
-                preparedStatement.setLong(3, System.currentTimeMillis());
-                if (preparedStatement.executeUpdate() == 1) {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("phone", phone);
-                    jsonObject.put("code", code);
-                    return ResultUtil.getSuccessJSON(jsonObject).toString();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),create_time FROM message_code WHERE phone = \"" + phone + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null && resultSet.next()) {
+                if (resultSet.getInt(1) == 1) {
+                    long time = System.currentTimeMillis() - resultSet.getLong(2);
+                    if (time < 60 * 1000) {
+                        return ResultUtil.getErrorJSON(Constant.GET_CODE_TIME_TOO_DISTANCE).toString();
+                    }
                 }
-                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
-            } finally {
-                SQLManager.closePreparedStatement(preparedStatement);
-                SQLManager.closeConnection(connection);
+                int code = CodeUtil.getCode(phone);
+                if (code != -1) {
+                    SQLManager.closePreparedStatement(preparedStatement);
+                    sql = "INSERT INTO message_code ( phone , code , create_time ) VALUES ( ? , ? , ? )";
+                    preparedStatement = connection.prepareStatement(sql);
+                    preparedStatement.setString(1, phone);
+                    preparedStatement.setInt(2, code);
+                    preparedStatement.setLong(3, System.currentTimeMillis());
+                    if (preparedStatement.executeUpdate() == 1) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("phone", phone);
+                        jsonObject.put("code", code);
+                        return ResultUtil.getSuccessJSON(jsonObject).toString();
+                    }
+                }
             }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
         }
-        return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
     }
 
     @Override
@@ -136,7 +149,7 @@ public class UserDaoImpl implements UserDao {
                                                 jsonObject.put("nick_name", resultSet.getString(3));
                                                 jsonObject.put("sex", resultSet.getString(4));
                                                 jsonObject.put("sign", resultSet.getString(5));
-                                                jsonObject.put("birthday", resultSet.getString(6));
+                                                jsonObject.put("birthday", resultSet.getInt(6));
                                                 jsonObject.put("photo", resultSet.getString(7));
                                                 jsonObject.put("token", token);
 
@@ -166,6 +179,38 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String checkManagerLogin(String id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT phone,nick_name,sex,sign,birthday,photo FROM manager_user WHERE id = \"" + id + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null && resultSet.next()) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", id);
+                jsonObject.put("phone", resultSet.getLong(1));
+                jsonObject.put("nick_name", resultSet.getString(2));
+                jsonObject.put("sex", resultSet.getInt(3));
+                jsonObject.put("sign", resultSet.getString(4));
+                jsonObject.put("birthday", resultSet.getInt(5));
+                jsonObject.put("photo", resultSet.getString(6));
+                return ResultUtil.getSuccessJSON(jsonObject).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } finally {
             SQLManager.closeResultSet(resultSet);
             SQLManager.closePreparedStatement(preparedStatement);
@@ -307,7 +352,7 @@ public class UserDaoImpl implements UserDao {
                             jsonObject.put("nick_name", resultSet.getString(4));
                             jsonObject.put("sex", resultSet.getString(5));
                             jsonObject.put("sign", resultSet.getString(6));
-                            jsonObject.put("birthday", resultSet.getString(7));
+                            jsonObject.put("birthday", resultSet.getInt(7));
                             jsonObject.put("photo", resultSet.getString(8));
                             jsonObject.put("token", token);
 
@@ -355,7 +400,7 @@ public class UserDaoImpl implements UserDao {
                         jsonObject.put("nick_name", resultSet.getString(3));
                         jsonObject.put("sex", resultSet.getInt(4));
                         jsonObject.put("sign", resultSet.getString(5));
-                        jsonObject.put("birthday", resultSet.getString(6));
+                        jsonObject.put("birthday", resultSet.getInt(6));
                         jsonObject.put("photo", resultSet.getString(7));
                         return ResultUtil.getSuccessJSON(jsonObject).toString();
                     }
@@ -365,7 +410,7 @@ public class UserDaoImpl implements UserDao {
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_IS_EXIST).toString();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } finally {
             SQLManager.closeResultSet(resultSet);
             SQLManager.closePreparedStatement(preparedStatement);

@@ -54,6 +54,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String checkLoginManager(String id, String token) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        int isTrueToken = new UserDaoImpl().managerTokenIsTrue(id, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_TIME_OUT).toString();
+        }
+        return new UserDaoImpl().checkManagerLogin(id);
+    }
+
+    @Override
     public String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo) {
         if (!MyUtils.isNumber(id) || MyUtils.isNull(token)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();

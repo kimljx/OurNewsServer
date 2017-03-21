@@ -63,14 +63,16 @@ public class Constant {
 
     // 手机号格式错误
     public static final int PHONE_NUMBER_ERROR = 10001;
+    // 获取验证码时间过短
+    public static final int GET_CODE_TIME_TOO_DISTANCE = 10002;
     // 请先获取验证码
-    public static final int PLEASE_GET_CODE_FIRST = 10002;
+    public static final int PLEASE_GET_CODE_FIRST = 10003;
     // 验证码过期
-    public static final int MESSAGE_CODE_TIME_OUT = 10003;
+    public static final int MESSAGE_CODE_TIME_OUT = 10004;
     // 验证码错误
-    public static final int MESSAGE_CODE_ERROR = 10004;
+    public static final int MESSAGE_CODE_ERROR = 10005;
     // TOKEN过期
-    public static final int TOKEN_TIME_OUT = 10005;
+    public static final int TOKEN_TIME_OUT = 10006;
     // 新增新闻失败
     public static final int ADD_NEWS_ERROR = 10010;
     // 连接激光服务器失败

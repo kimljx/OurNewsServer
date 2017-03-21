@@ -97,6 +97,9 @@
         <action name="loginManager" method="action" class="com.ournews.action.manager.ManagerLoginAction">
             <result type="json"/>
         </action>
+        <action name="checkLoginManager" method="action" class="com.ournews.action.manager.ManagerCheckLoginAction">
+            <result type="json"/>
+        </action>
         <action name="changeManagerInfo" method="action" class="com.ournews.action.manager.ManagerChangeUserInfoAction">
             <result type="json"/>
         </action>

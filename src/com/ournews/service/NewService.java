@@ -12,7 +12,7 @@ public interface NewService {
 
     String getSearchNew(String name, String page, String size, String sort);
 
-    String getContent(String uid, String nid);
+    String getContent(String uid, String nid, int type);
 
     String collectionNew(String nid, String uid, String token, String type);
 

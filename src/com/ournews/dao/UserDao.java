@@ -10,6 +10,8 @@ public interface UserDao {
 
     String loginManager(String phone, String code);
 
+    String checkManagerLogin(String id);
+
     int managerTokenIsTrue(String id, String token);
 
     String changeManagerInfo(String id, String nickName, String sex, String sign, String birthday, String photo);

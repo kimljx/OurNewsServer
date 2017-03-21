@@ -72,17 +72,25 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
-    public String getContent(String uid, String nid) {
+    public String getContent(String uid, String nid, int type) {
         if (MyUtils.isNull(uid)) {
             if (!MyUtils.isNumber(nid)) {
                 return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
             }
-            return new NewDaoImpl().getNewContent(nid);
+            if (type == 1) {
+                return new NewDaoImpl().getNewContent(nid);
+            } else {
+                return new NewDaoImpl().getNewContent(nid);
+            }
         } else {
             if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid)) {
                 return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
             }
-            return new NewDaoImpl().getNewContentUser(uid, nid);
+            if (type == 1) {
+                return new NewDaoImpl().getNewContentUser(uid, nid);
+            } else {
+                return new NewDaoImpl().getNewContentUser(uid, nid);
+            }
         }
     }
 

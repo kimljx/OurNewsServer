@@ -10,6 +10,8 @@ public interface UserService {
 
     String loginManager(String phone, String code, String time, String key);
 
+    String checkLoginManager(String id, String token);
+
     String changeManagerInfo(String id, String token, String nickName, String sex, String sign, String birthday, String photo);
 
     String register(String loginName, String password, String time, String key);
