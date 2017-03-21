@@ -58,6 +58,9 @@
         <action name="getNewContent" method="action" class="com.ournews.action.user.UserGetNewContentAction">
             <result type="json"/>
         </action>
+        <action name="getNewContentForWeb" method="action" class="com.ournews.action.user.UserGetNewContentForWebAction">
+            <result type="json"/>
+        </action>
         <action name="collectNew" method="action" class="com.ournews.action.user.UserCollectNewAction">
             <result type="json"/>
         </action>
