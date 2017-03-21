@@ -222,7 +222,7 @@ public class NewDaoImpl implements NewDao {
                         managerJSON.put("sign", resultSet.getString(9));
                         managerJSON.put("birthday", resultSet.getInt(10));
                         managerJSON.put("photo", resultSet.getString(11));
-                        jsonObject.put("manager", managerJSON);
+                        json.put("manager", managerJSON);
 
                         SQLManager.closeResultSet(resultSetNum);
                         SQLManager.closePreparedStatement(preparedStatement);
