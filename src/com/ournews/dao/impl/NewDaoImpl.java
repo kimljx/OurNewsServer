@@ -444,6 +444,103 @@ public class NewDaoImpl implements NewDao {
                         preparedStatement.setLong(3, System.currentTimeMillis());
                         preparedStatement.executeUpdate();
                         SQLManager.closePreparedStatement(preparedStatement);
+                        sql = "SELECT state,content FROM news WHERE id = \"" + nid + "\"";
+                        preparedStatement = connection.prepareStatement(sql);
+                        resultSet = preparedStatement.executeQuery();
+                        if (resultSet != null) {
+                            if (resultSet.next()) {
+                                if (resultSet.getInt(1) == 1) {
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("id", nid);
+                                    jsonObject.put("content", resultSet.getString(2));
+                                    SQLManager.closeResultSet(resultSet);
+                                    SQLManager.closePreparedStatement(preparedStatement);
+                                    sql = "SELECT count(1) FROM collection WHERE nid = \"" + nid + "\" AND uid =\"" + uid + "\"";
+                                    preparedStatement = connection.prepareStatement(sql);
+                                    resultSet = preparedStatement.executeQuery();
+                                    if (resultSet != null) {
+                                        if (resultSet.next()) {
+                                            jsonObject.put("is_collected", resultSet.getInt(1));
+                                            return ResultUtil.getSuccessJSON(jsonObject).toString();
+                                        }
+                                    }
+                                    return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                                }
+                                return ResultUtil.getErrorJSON(Constant.NEW_NO_ONLINE).toString();
+                            }
+                            return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
+                        }
+                        return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String getNewContent(String nid) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT state,content FROM news WHERE id = \"" + nid + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) == 1) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("id", nid);
+                        jsonObject.put("content", resultSet.getString(2));
+                        jsonObject.put("is_collected", -1);
+                        return ResultUtil.getSuccessJSON(jsonObject).toString();
+                    }
+                }
+                return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String getNewContentUserForWeb(String uid, String nid) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1) FROM user WHERE id = \"" + uid + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) != 0) {
+                        SQLManager.closeResultSet(resultSet);
+                        SQLManager.closePreparedStatement(preparedStatement);
+                        sql = "REPLACE INTO history ( uid , nid , time ) VALUES ( ? ,? ,? ) ";
+                        preparedStatement = connection.prepareStatement(sql);
+                        preparedStatement.setString(1, uid);
+                        preparedStatement.setString(2, nid);
+                        preparedStatement.setLong(3, System.currentTimeMillis());
+                        preparedStatement.executeUpdate();
+                        SQLManager.closePreparedStatement(preparedStatement);
                         sql = "SELECT n.state,n.content,m.id,m.nick_name,m.sex,m.sign,m.birthday,m.photo FROM news AS n " +
                                 "LEFT JOIN manager_user AS m ON n.mid = m.id WHERE n.id = \"" + nid + "\"";
                         preparedStatement = connection.prepareStatement(sql);
@@ -526,7 +623,7 @@ public class NewDaoImpl implements NewDao {
     }
 
     @Override
-    public String getNewContent(String nid) {
+    public String getNewContentForWeb(String nid) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

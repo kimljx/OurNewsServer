@@ -17,6 +17,10 @@ public interface NewDao {
 
     String getNewContent(String id);
 
+    String getNewContentUserForWeb(String uid, String nid);
+
+    String getNewContentForWeb(String id);
+
     String collectNew(String nid, String uid, String type);
 
     String getCollections(String id, String uid, String page, String size, String sort);

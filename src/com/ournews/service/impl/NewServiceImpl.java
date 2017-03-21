@@ -80,7 +80,7 @@ public class NewServiceImpl implements NewService {
             if (type == 1) {
                 return new NewDaoImpl().getNewContent(nid);
             } else {
-                return new NewDaoImpl().getNewContent(nid);
+                return new NewDaoImpl().getNewContentForWeb(nid);
             }
         } else {
             if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid)) {
@@ -89,7 +89,7 @@ public class NewServiceImpl implements NewService {
             if (type == 1) {
                 return new NewDaoImpl().getNewContentUser(uid, nid);
             } else {
-                return new NewDaoImpl().getNewContentUser(uid, nid);
+                return new NewDaoImpl().getNewContentUserForWeb(uid, nid);
             }
         }
     }
