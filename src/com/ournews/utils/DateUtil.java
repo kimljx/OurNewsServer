@@ -11,8 +11,10 @@ public class DateUtil {
 
     private static final String SECONDS = "刚刚";
     private static final String MINUTES = "分钟前";
-    private static final String HOURS = "小时前";
+    private static final String HOURS = "小时";
     private static final String DAYS = "天前";
+    private static final String FORMAT = "yyyy年M月d日 HH:mm";
+
 
     public static String getTime(long time) {
         StringBuilder sb = new StringBuilder();
@@ -22,12 +24,14 @@ public class DateUtil {
         } else if (distance < 60 * 60) {
             sb.append(distance / 60).append(MINUTES);
         } else if (distance < 60 * 60 * 24) {
-            sb.append(distance / 24).append(HOURS);
+            int hour = (int) (distance / 60 / 60);
+            int minute = (int) (distance % (60 * 60));
+            sb.append(hour).append(HOURS).append(minute).append(MINUTES);
         } else if (distance < 60 * 60 * 24 * 4) {
-            sb.append(distance / 4).append(DAYS);
+            sb.append(distance / 60 / 60 / 24).append(DAYS);
         } else {
             Date date = new Date(time);
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+            return new SimpleDateFormat(FORMAT).format(date);
         }
         return sb.toString();
     }

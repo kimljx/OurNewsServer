@@ -115,7 +115,7 @@ public class NewServiceImpl implements NewService {
 
     @Override
     public String getCollections(String id, String token, String uid, String page, String size, String sort) {
-        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
         int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);
@@ -139,7 +139,7 @@ public class NewServiceImpl implements NewService {
 
     @Override
     public String getHistory(String id, String token, String uid, String page, String size, String sort) {
-        if (!MyUtils.isNumber(uid) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token) || !MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
         int isTrueToken = new UserDaoImpl().tokenIsTrue(id, token);

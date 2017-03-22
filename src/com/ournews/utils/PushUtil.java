@@ -91,7 +91,8 @@ public class PushUtil {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            return ResultUtil.getSuccessJSON(JSONObject.fromObject(response.body().string())).toString();
+            return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+//            return ResultUtil.getSuccessJSON(JSONObject.fromObject(response.body().string())).toString();
         } catch (IOException e) {
             return ResultUtil.getErrorJSON(Constant.JIGUANG_INTERNET_ERROR).toString();
         }
