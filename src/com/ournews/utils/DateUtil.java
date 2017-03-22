@@ -25,7 +25,7 @@ public class DateUtil {
             sb.append(distance / 60).append(MINUTES);
         } else if (distance < 60 * 60 * 24) {
             int hour = (int) (distance / 60 / 60);
-            int minute = (int) (distance % (60 * 60));
+            int minute = (int) ((distance / 60) - (hour * 60));
             sb.append(hour).append(HOURS).append(minute).append(MINUTES);
         } else if (distance < 60 * 60 * 24 * 4) {
             sb.append(distance / 60 / 60 / 24).append(DAYS);
