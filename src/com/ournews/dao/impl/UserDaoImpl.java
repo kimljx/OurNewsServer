@@ -99,6 +99,8 @@ public class UserDaoImpl implements UserDao {
                                 return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                             }
                             return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_ERROR).toString();
+                        } else if (time < 10 * 60 * 1000) {
+                            return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_ERROR).toString();
                         }
                         return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_TIME_OUT).toString();
                     }
@@ -167,6 +169,8 @@ public class UserDaoImpl implements UserDao {
                                     }
                                     return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                                 }
+                                return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_ERROR).toString();
+                            } else if (time < 10 * 60 * 1000) {
                                 return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_ERROR).toString();
                             }
                             return ResultUtil.getErrorJSON(Constant.MESSAGE_CODE_TIME_OUT).toString();
