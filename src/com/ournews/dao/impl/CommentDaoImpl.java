@@ -1,7 +1,10 @@
 package com.ournews.dao.impl;
 
 import com.ournews.dao.CommentDao;
-import com.ournews.utils.*;
+import com.ournews.utils.Constant;
+import com.ournews.utils.DateUtil;
+import com.ournews.utils.ResultUtil;
+import com.ournews.utils.SQLManager;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -11,6 +14,7 @@ import java.sql.*;
  * Created by Misutesu on 2017/3/11 0011.
  */
 public class CommentDaoImpl implements CommentDao {
+
     @Override
     public String writeComment(String uId, String nId, String content) {
         Connection connection = null;
@@ -434,6 +438,72 @@ public class CommentDaoImpl implements CommentDao {
                         return ResultUtil.getSuccessJSON(json).toString();
                     }
                 }
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public String getCommentMessage(String uid, String page, String size) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1)" +
+                " FROM message AS m,comment_child AS cc,comment AS c,user AS u" +
+                " WHERE m.uid = \"" + uid + "\" AND m.type =\"1\" AND m.state = \"1\"" +
+                " AND m.cid = cc.id AND AND cc.cid = c.id cc.uid = u.id AND cc.state = 1 AND c.state= 1 AND u.state = 1";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null && resultSet.next()) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("unread_num", resultSet.getInt(1));
+                SQLManager.closeResultSet(resultSet);
+                SQLManager.closePreparedStatement(preparedStatement);
+                sql = "SELECT m.id,m.cid,m.state,cc.content,cc.create_time,c,id,c.content,u.id,u.nick_name.u.sex,u.sign,u.birthday,u.photo" +
+                        " FROM message AS m,comment_child AS cc,comment AS c,user AS u" +
+                        " WHERE m.uid = \"" + uid + "\" AND m.cid = cc.id AND cc.cid = c.id AND cc.uid = u.id" +
+                        " cc.state = 1 AND c.state = 1 AND u.state = 1 limit ";
+                sql = sql + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
+                preparedStatement = connection.prepareStatement(sql);
+                resultSet = preparedStatement.executeQuery();
+                if (resultSet != null) {
+                    JSONArray jsonArray = new JSONArray();
+                    while (resultSet.next()) {
+                        JSONObject messageJSON = new JSONObject();
+                        messageJSON.put("id", resultSet.getLong(1));
+                        messageJSON.put("state", resultSet.getInt(3));
+                        messageJSON.put("create_time", DateUtil.getTime(resultSet.getLong(5)));
+                        JSONObject commentChildJSON = new JSONObject();
+                        commentChildJSON.put("id", resultSet.getLong(2));
+                        commentChildJSON.put("content", resultSet.getString(4));
+                        JSONObject commentJSON = new JSONObject();
+                        commentJSON.put("id", resultSet.getLong(6));
+                        commentJSON.put("content", resultSet.getString(7));
+                        JSONObject userJSON = new JSONObject();
+                        userJSON.put("id", resultSet.getLong(8));
+                        userJSON.put("nick_name", resultSet.getString(9));
+                        userJSON.put("sex", resultSet.getInt(10));
+                        userJSON.put("sign", resultSet.getString(11));
+                        userJSON.put("birthday", resultSet.getInt(12));
+                        userJSON.put("photo", resultSet.getString(13));
+                        commentChildJSON.put("user", userJSON);
+                        commentJSON.put("child", commentChildJSON);
+                        messageJSON.put("comment", commentJSON);
+                        jsonArray.add(messageJSON);
+                    }
+                    jsonObject.put("message", jsonArray);
+                    return ResultUtil.getSuccessJSON(jsonObject).toString();
+                }
+                return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } catch (SQLException | ClassNotFoundException e) {

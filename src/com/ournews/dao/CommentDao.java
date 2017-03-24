@@ -15,4 +15,6 @@ public interface CommentDao {
     String writeChildComment(String uid, String cid, String content);
 
     String getChildComment(String cid, String page, String size, String sort);
+
+    String getCommentMessage(String uid, String page, String size);
 }

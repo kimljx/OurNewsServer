@@ -13,4 +13,6 @@ public interface CommentService {
     String lickComment(String cid, String uid, String token, String type);
 
     String getChildComment(String cid, String page, String size, String sort);
+
+    String getCommentMessage(String uid, String token, String page, String size);
 }

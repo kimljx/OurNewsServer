@@ -85,6 +85,9 @@
         <action name="getChildComment" method="action" class="com.ournews.action.user.UserGetChildCommentAction">
             <result type="json"/>
         </action>
+        <action name="getCommentMessage" method="action" class="com.ournews.action.user.UserGetCommentMessageAction">
+            <result type="json"/>
+        </action>
     </package>
 
     <package name="ManagerRequest" extends="json-default">

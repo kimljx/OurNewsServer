@@ -12,6 +12,7 @@ import com.ournews.utils.ResultUtil;
  * Created by Misutesu on 2017/3/11 0011.
  */
 public class CommentServiceImpl implements CommentService {
+
     @Override
     public String writeComment(String uid, String nid, String content, String time, String token, String key) {
         if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(nid) || !MyUtils.isVarchar(content)
@@ -110,5 +111,27 @@ public class CommentServiceImpl implements CommentService {
         if (Integer.valueOf(size) > 20)
             size = "20";
         return new CommentDaoImpl().getChildComment(cid, page, size, sort);
+    }
+
+    @Override
+    public String getCommentMessage(String uid, String token, String page, String size) {
+        if (!MyUtils.isNumber(uid) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        int isTrueToken = new UserDaoImpl().tokenIsTrue(uid, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_ONLINE).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        }
+        if (Integer.valueOf(page) < 1)
+            page = "1";
+        if (Integer.valueOf(size) > 20)
+            size = "20";
+        return new CommentDaoImpl().getCommentMessage(uid, page, size);
     }
 }
