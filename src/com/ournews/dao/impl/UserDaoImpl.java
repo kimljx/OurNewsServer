@@ -436,10 +436,9 @@ public class UserDaoImpl implements UserDao {
                 if (resultSet.next()) {
                     if (resultSet.getInt(1) == 1) {
                         if (resultSet.getInt(2) == 1) {
-                            if (!Constant.IS_DEBUG)
-                                if (!token.equals(resultSet.getString(3)))
-                                    return 4;
-                            return 5;
+                            if (Constant.IS_DEBUG || token.equals(resultSet.getString(3)))
+                                return 5;
+                            return 4;
                         }
                         return 3;
                     }
