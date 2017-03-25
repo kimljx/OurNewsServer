@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else {
             if ((!MyUtils.isNull(sex) && !MyUtils.isNumber(sex, 1, 2))
-                    || (!MyUtils.isNull(sign) && sign.length() <= 50)
+                    || (!MyUtils.isNull(sign) && sign.length() > 20)
                     || (!MyUtils.isNull(birthday) && !MyUtils.isBirthday(birthday))) {
                 return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
             }
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else {
             if ((!MyUtils.isNull(sex) && !MyUtils.isNumber(sex, 1, 2))
-                    || (!MyUtils.isNull(sign) && sign.length() <= 50)
+                    || (!MyUtils.isNull(sign) && sign.length() > 20)
                     || (!MyUtils.isNull(birthday) && !MyUtils.isBirthday(birthday))) {
                 return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
             }
