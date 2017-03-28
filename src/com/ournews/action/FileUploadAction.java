@@ -34,7 +34,7 @@ public class FileUploadAction extends BaseAction {
 
     @Override
     public void action() throws IOException {
-        sendJSON(getJSON().toString());
+        sendJSONForUpload(getJSON().toString());
     }
 
     public JSONObject getJSON() {

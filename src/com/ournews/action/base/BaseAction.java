@@ -48,4 +48,16 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
         response.getOutputStream().flush();
         response.getOutputStream().close();
     }
+
+    public void sendJSONForUpload(String result) throws IOException {
+//            response.setContentType("text/html;charset=utf-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
+        response.getOutputStream().write(result.getBytes("UTF-8"));
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
+    }
 }
