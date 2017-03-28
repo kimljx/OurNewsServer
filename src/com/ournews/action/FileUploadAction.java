@@ -2,6 +2,7 @@ package com.ournews.action;
 
 import com.ournews.action.base.BaseAction;
 import com.ournews.utils.Constant;
+import com.ournews.utils.ResultUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.struts2.ServletActionContext;
@@ -44,18 +45,10 @@ public class FileUploadAction extends BaseAction {
             JSONArray jsonArray = new JSONArray();
             for (int i = 0; i < upload.length; i++) {
                 if (!uploadContentType[i].startsWith("image/")) {
-                    jsonObject = new JSONObject();
-                    jsonObject.put("result", "error");
-                    jsonObject.put("error_code", Constant.UPLOAD_NO_IMAGE);
-                    jsonObject.put("data", "");
-                    return jsonObject;
+                    return ResultUtil.getErrorJSON(Constant.UPLOAD_NO_IMAGE);
                 } else {
                     if (upload[i].length() > 5 * 1024 * 1024) {
-                        jsonObject = new JSONObject();
-                        jsonObject.put("result", "error");
-                        jsonObject.put("error_code", Constant.UPLOAD_FILE_TOO_BIG);
-                        jsonObject.put("data", "");
-                        return jsonObject;
+                        return ResultUtil.getErrorJSON(Constant.UPLOAD_FILE_TOO_BIG);
                     } else {
                         String path = ServletActionContext.getServletContext().getRealPath(File.separator + "upload");
                         File file = new File(path);
@@ -82,11 +75,7 @@ public class FileUploadAction extends BaseAction {
             return jsonObject;
         } catch (IOException e) {
             e.printStackTrace();
-            jsonObject = new JSONObject();
-            jsonObject.put("result", "error");
-            jsonObject.put("error_code", Constant.SERVER_ERROR);
-            jsonObject.put("data", "");
-            return jsonObject;
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR);
         } finally {
             try {
                 if (in != null)
