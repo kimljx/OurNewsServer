@@ -25,4 +25,6 @@ public interface UserDao {
     int tokenIsTrue(String id, String token);
 
     String changeInfo(String id, String nickName, String sex, String sign, String birthday, String photo);
+
+    String checkUpdate();
 }

@@ -91,8 +91,8 @@ public class MyUtils {
         if (file != null) {
             File[] list = file.listFiles();
             if (list != null)
-                for (int i = 0; i < list.length; i++) {
-                    if (list[i].isFile() && list[i].getName().equals(str)) {
+                for (File aList : list) {
+                    if (aList.isFile() && aList.getName().equals(str)) {
                         try {
                             zipImage(file);
                         } catch (IOException e) {

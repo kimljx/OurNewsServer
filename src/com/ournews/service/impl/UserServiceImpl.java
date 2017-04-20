@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String register(String loginName, String password, String time, String key) {
-        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNull(time) || MyUtils.isNull(key)) {
+        if (MyUtils.isNull(loginName) || MyUtils.isNull(password) || !MyUtils.isNumber(time) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isLoginName(loginName)) {
             return ResultUtil.getErrorJSON(Constant.LOGIN_NAME_LENGTH_ERROR).toString();
@@ -191,5 +191,17 @@ public class UserServiceImpl implements UserService {
                 photo = null;
             return new UserDaoImpl().changeInfo(id, nickName, sex, sign, birthday, photo);
         }
+    }
+
+    @Override
+    public String checkUpdate(String time, String key) {
+        if (!MyUtils.isNumber(time) || MyUtils.isNull(key)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        } else if (!MyUtils.isTime(time)) {
+            return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
+        } else if (!MD5Util.getMD5(Constant.KEY + time).equals(key)) {
+            return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
+        }
+        return new UserDaoImpl().checkUpdate();
     }
 }

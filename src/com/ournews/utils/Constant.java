@@ -18,6 +18,8 @@ public class Constant {
     public static final int CONNECT_TIME_OUT = 102;
     // KEY错误
     public static final int KEY_ERROR = 103;
+    // 检测更新失败
+    public static final int CHECK_UPDATE_ERROR = 104;
     // 用户名长度不正确
     public static final int LOGIN_NAME_LENGTH_ERROR = 1001;
     // 密码长度不正确

@@ -25,6 +25,14 @@
                 <param name="bufferSize">1024</param>
             </result>
         </action>
+        <action name="downloadApk" class="com.ournews.action.ApkDownloadAction">
+            <result name="success" type="stream">
+                <param name="contentType">application/octet-stream</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;fileName="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
     </package>
 
     <package name="FileUpload" extends="json-default">
@@ -41,6 +49,9 @@
             <result type="json"/>
         </action>
         <action name="checkLogin" method="action" class="com.ournews.action.user.UserCheckLoginAction">
+            <result type="json"/>
+        </action>
+        <action name="checkUpdate" method="action" class="com.ournews.action.user.UserCheckUpdateAction">
             <result type="json"/>
         </action>
         <action name="changeInfo" method="action" class="com.ournews.action.user.UserChangeInfoAction">
