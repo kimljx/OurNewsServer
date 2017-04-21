@@ -1,6 +1,7 @@
 package com.ournews.action;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.ournews.utils.FileUtil;
 import org.apache.struts2.ServletActionContext;
 
 import java.io.*;
@@ -16,8 +17,10 @@ public class ApkDownloadAction extends ActionSupport {
     private InputStream inputStream;
     //下载文件的文件名
     private String fileName;
-//    //下载文件的类型
+    //    //下载文件的类型
 //    private String contentType;
+    //下载文件大小
+    private String contentLength;
 
     @Override
     public String execute() throws Exception {
@@ -28,11 +31,16 @@ public class ApkDownloadAction extends ActionSupport {
         return fileName;
     }
 
+    public String getContentLength() {
+        return contentLength;
+    }
+
     public InputStream getInputStream() throws FileNotFoundException {
         fileName = ServletActionContext.getRequest().getParameter("name");
         String path = ServletActionContext.getServletContext().getRealPath(File.separator + "apk");
         File file = new File(path, !fileName.endsWith(".apk") ? "1" : fileName);
         if (file.exists()) {
+            contentLength = String.valueOf(FileUtil.getFileLength(file));
             inputStream = new BufferedInputStream(new FileInputStream(file));
         }
         return inputStream;
