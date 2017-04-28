@@ -57,11 +57,12 @@ public class Constant {
     // 此评论没有点赞过
     public static final int NO_LIKE_COMMENT = 9006;
 
+    // 没找到上传的文件
+    public static final int NO_FIND_UPLOAD_FILE = 100000;
     // 上传文件不是图片
     public static final int UPLOAD_NO_IMAGE = 100001;
     // 上传文件过大
     public static final int UPLOAD_FILE_TOO_BIG = 100002;
-
 
     // 手机号格式错误
     public static final int PHONE_NUMBER_ERROR = 10001;

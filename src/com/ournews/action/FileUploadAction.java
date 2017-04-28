@@ -43,6 +43,9 @@ public class FileUploadAction extends BaseAction {
         OutputStream out = null;
         try {
             JSONArray jsonArray = new JSONArray();
+            if (upload == null) {
+                return ResultUtil.getErrorJSON(Constant.NO_FIND_UPLOAD_FILE);
+            }
             for (int i = 0; i < upload.length; i++) {
                 if (!uploadContentType[i].startsWith("image/")) {
                     return ResultUtil.getErrorJSON(Constant.UPLOAD_NO_IMAGE);
