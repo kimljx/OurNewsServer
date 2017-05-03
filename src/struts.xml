@@ -71,7 +71,8 @@
         <action name="getNewContent" method="action" class="com.ournews.action.user.UserGetNewContentAction">
             <result type="json"/>
         </action>
-        <action name="getNewContentForWeb" method="action" class="com.ournews.action.user.UserGetNewContentForWebAction">
+        <action name="getNewContentForWeb" method="action"
+                class="com.ournews.action.user.UserGetNewContentForWebAction">
             <result type="json"/>
         </action>
         <action name="collectNew" method="action" class="com.ournews.action.user.UserCollectNewAction">
@@ -105,6 +106,13 @@
 
     <package name="ManagerRequest" extends="json-default">
         <action name="setMode" method="action" class="com.ournews.action.manager.ManagerSetModeAction">
+            <result type="json"/>
+        </action>
+        <action name="getVersionInfo" method="action" class="com.ournews.action.manager.ManagerGetVersionInfoAction">
+            <result type="json"/>
+        </action>
+        <action name="changeVersionInfo" method="action"
+                class="com.ournews.action.manager.ManagerChangeVersionInfoAction">
             <result type="json"/>
         </action>
         <action name="getCode" method="action" class="com.ournews.action.manager.ManagerGetCodeAction">

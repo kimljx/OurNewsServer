@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Created by Administrator on 2017/5/3.
  */
-public class ManagerGetOwnNewAction extends BaseAction {
+public class ManagerChangeVersionInfoAction extends BaseAction {
     @Override
     public void action() throws IOException {
         if (isPost()) {
@@ -17,7 +17,7 @@ public class ManagerGetOwnNewAction extends BaseAction {
             String size = request.getParameter("size");
             String sort = request.getParameter("sort");
 
-            sendJSON("未完成的接口");
+            sendJSON("");
         } else {
             sendJSON(getNoPostResponse());
         }
