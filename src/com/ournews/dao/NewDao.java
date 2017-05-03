@@ -5,7 +5,7 @@ package com.ournews.dao;
  */
 public interface NewDao {
 
-    String addNews(String mid, String title, String cover, String abstractContent, String content, String type);
+    String addNews(String mid, String title, String cover, String abstractContent, String content, String type, String push);
 
     String getHomeNews(String selectType);
 

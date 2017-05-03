@@ -4,7 +4,7 @@ package com.ournews.service;
  * Created by Misutesu on 2017/3/5 0005.
  */
 public interface NewService {
-    String addNew(String mid, String token, String title, String cover, String abstractContent, String content, String type);
+    String addNew(String mid, String token, String title, String cover, String abstractContent, String content, String type, String push);
 
     String getHomeNew(String type);
 

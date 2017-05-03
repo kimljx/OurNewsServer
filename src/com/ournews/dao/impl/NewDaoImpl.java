@@ -20,9 +20,10 @@ import java.util.List;
 public class NewDaoImpl implements NewDao {
 
     @Override
-    public String addNews(String mid, String title, String cover, String abstractContent, String content, String type) {
+    public String addNews(String mid, String title, String cover, String abstractContent, String content, String type, String push) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         String sql = "INSERT INTO news ( mid , title , cover , abstract , content , create_time , type ) VALUES ( ? , ? , ? , ? , ? , ? )";
         try {
             connection = SQLManager.getConnection();
@@ -36,6 +37,16 @@ public class NewDaoImpl implements NewDao {
             preparedStatement.setString(7, type);
             if (preparedStatement.executeUpdate() == 1) {
                 MyUtils.zipImage(new File(ServletActionContext.getServletContext().getRealPath("upload"), cover));
+                if (push.equals("1")) {
+                    SQLManager.closePreparedStatement(preparedStatement);
+                    sql = "SELECT max(id) FROM news";
+                    preparedStatement = connection.prepareStatement(sql);
+                    resultSet = preparedStatement.executeQuery();
+                    if (resultSet != null && resultSet.next()) {
+                        String nid = resultSet.getString(1);
+                        new PushDaoImpl().pushNewToAll(nid);
+                    }
+                }
                 return ResultUtil.getSuccessJSON(new JSONObject()).toString();
             }
             return ResultUtil.getErrorJSON(Constant.ADD_NEWS_ERROR).toString();
@@ -43,6 +54,7 @@ public class NewDaoImpl implements NewDao {
             e.printStackTrace();
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
         } finally {
+            SQLManager.closeResultSet(resultSet);
             SQLManager.closePreparedStatement(preparedStatement);
             SQLManager.closeConnection(connection);
         }

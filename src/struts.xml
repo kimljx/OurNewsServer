@@ -128,5 +128,8 @@
         <action name="pushNew" method="action" class="com.ournews.action.manager.ManagerPushNewToAllAction">
             <result type="json"/>
         </action>
+        <action name="getOwnNewList" method="action" class="com.ournews.action.manager.ManagerGetOwnNewAction">
+            <result type="json"/>
+        </action>
     </package>
 </struts>

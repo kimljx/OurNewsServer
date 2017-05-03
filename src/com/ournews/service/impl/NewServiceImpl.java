@@ -13,10 +13,11 @@ import com.ournews.utils.ResultUtil;
 public class NewServiceImpl implements NewService {
 
     @Override
-    public String addNew(String mid, String token, String title, String cover, String abstractContent, String content, String type) {
+    public String addNew(String mid, String token, String title, String cover, String abstractContent, String content, String type, String push) {
         if (!MyUtils.isNumber(mid) || MyUtils.isNull(token) || MyUtils.isNull(title)
                 || MyUtils.isNull(cover) || MyUtils.isNull(abstractContent)
-                || MyUtils.isNull(content) || !MyUtils.isNumber(type, 0, 6)) {
+                || MyUtils.isNull(content) || !MyUtils.isNumber(type, 0, 6)
+                || !MyUtils.isNumber(push, 0, 1)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
         int isTrueToken = new UserDaoImpl().managerTokenIsTrue(mid, token);
@@ -29,7 +30,7 @@ public class NewServiceImpl implements NewService {
         } else if (isTrueToken == 4) {
             return ResultUtil.getErrorJSON(Constant.TOKEN_TIME_OUT).toString();
         }
-        return new NewDaoImpl().addNews(mid, title, cover, abstractContent, content, type);
+        return new NewDaoImpl().addNews(mid, title, cover, abstractContent, content, type, push);
     }
 
     @Override

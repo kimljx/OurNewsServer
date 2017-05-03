@@ -20,8 +20,9 @@ public class ManagerAddNewsAction extends BaseAction {
             String abstractContent = request.getParameter("abstract");
             String content = request.getParameter("content");
             String type = request.getParameter("type");
+            String push = request.getParameter("push");
 
-            sendJSON(new NewServiceImpl().addNew(mid, token, title, cover, abstractContent, content, type));
+            sendJSON(new NewServiceImpl().addNew(mid, token, title, cover, abstractContent, content, type, push));
         } else {
             sendJSON(getNoPostResponse());
         }
