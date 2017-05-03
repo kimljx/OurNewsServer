@@ -10,7 +10,7 @@ import okhttp3.Response;
  */
 public class CodeUtil {
 
-    private static final String CODE_URL = "http://www.jintang54vip.com/APPInterface/user/Login.ashx??act=login&phone=";
+    private static final String CODE_URL = "http://www.jintang54vip.com/APPInterface/user/Login.ashx?act=login&phone=";
 
     private CodeUtil() {
     }
