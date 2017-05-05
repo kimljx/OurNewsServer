@@ -35,7 +35,7 @@ public class UserDaoImpl implements UserDao {
                 int code = CodeUtil.getCode(phone);
                 if (code != -1) {
                     SQLManager.closePreparedStatement(preparedStatement);
-                    sql = "INSERT INTO message_code ( phone , code , create_time ) VALUES ( ? , ? , ? )";
+                    sql = "REPLACE INTO message_code ( phone , code , create_time ) VALUES ( ? , ? , ? )";
                     preparedStatement = connection.prepareStatement(sql);
                     preparedStatement.setString(1, phone);
                     preparedStatement.setInt(2, code);
