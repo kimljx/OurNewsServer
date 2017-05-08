@@ -6,9 +6,9 @@ package com.ournews.service;
 public interface UserService {
     String getCode(String phone, String time, String key);
 
-    String registerManager(String phone, String code, String time, String key);
+    String registerManager(String phone, String code, String password, String time, String key);
 
-    String loginManager(String phone, String code, String time, String key);
+    String loginManager(String phone, String time, String key);
 
     String checkLoginManager(String id, String token);
 

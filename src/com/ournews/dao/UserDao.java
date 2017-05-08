@@ -6,9 +6,9 @@ package com.ournews.dao;
 public interface UserDao {
     String getCode(String phone);
 
-    String registerManager(String phone, String code);
+    String registerManager(String phone, String code, String password);
 
-    String loginManager(String phone, String code);
+    String loginManager(String phone, String time, String key);
 
     String checkManagerLogin(String id);
 

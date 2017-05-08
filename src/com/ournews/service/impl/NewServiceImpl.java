@@ -34,6 +34,30 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
+    public String getOwnNew(String mid, String token, String page, String size, String sort) {
+        if (!MyUtils.isNumber(mid) || MyUtils.isNull(token) || !MyUtils.isNumber(page) && !MyUtils.isNumber(size)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+        int isTrueToken = new UserDaoImpl().managerTokenIsTrue(mid, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_TIME_OUT).toString();
+        }
+        if (!MyUtils.isNumber(sort, 1, 2))
+            sort = "1";
+        if (Integer.valueOf(page) < 1)
+            page = "1";
+        if (Integer.valueOf(size) > 20)
+            size = "20";
+        return new NewDaoImpl().getOwnNew(mid, page, size, sort);
+    }
+
+    @Override
     public String getHomeNew(String type) {
         if (MyUtils.isNull(type)) {
             return new NewDaoImpl().getHomeNews(null);

@@ -1,6 +1,7 @@
 package com.ournews.action.manager;
 
 import com.ournews.action.base.BaseAction;
+import com.ournews.service.impl.NewServiceImpl;
 
 import java.io.IOException;
 
@@ -11,13 +12,13 @@ public class ManagerGetOwnNewAction extends BaseAction {
     @Override
     public void action() throws IOException {
         if (isPost()) {
-            String mid = request.getParameter("mid");
+            String id = request.getParameter("id");
             String token = request.getParameter("token");
             String page = request.getParameter("page");
             String size = request.getParameter("size");
             String sort = request.getParameter("sort");
 
-            sendJSON("未完成的接口");
+            sendJSON(new NewServiceImpl().getOwnNew(id, token, page, size, sort));
         } else {
             sendJSON(getNoPostResponse());
         }

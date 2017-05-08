@@ -14,10 +14,11 @@ public class ManagerRegisterAction extends BaseAction {
         if (isPost()) {
             String phone = request.getParameter("phone");
             String code = request.getParameter("code");
+            String password = request.getParameter("password");
             String time = request.getParameter("time");
             String key = request.getParameter("key");
 
-            sendJSON(new UserServiceImpl().registerManager(phone, code, time, key));
+            sendJSON(new UserServiceImpl().registerManager(phone, code, password, time, key));
         } else {
             sendJSON(getNoPostResponse());
         }

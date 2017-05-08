@@ -6,6 +6,8 @@ package com.ournews.service;
 public interface NewService {
     String addNew(String mid, String token, String title, String cover, String abstractContent, String content, String type, String push);
 
+    String getOwnNew(String mid, String token, String page, String size, String sort);
+
     String getHomeNew(String type);
 
     String getTypeNew(String type, String page, String size, String sort);

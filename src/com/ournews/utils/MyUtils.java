@@ -20,7 +20,7 @@ public class MyUtils {
     }
 
     public static boolean isPhone(String str){
-        return Pattern.matches("(\\+\\d+)?1[3458]\\d{9}$", str);
+        return Pattern.matches("(\\+\\d+)?1[34578]\\d{9}$", str);
     }
 
     public static boolean isLoginName(String str) {

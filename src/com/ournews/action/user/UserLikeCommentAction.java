@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by Administrator on 2017/3/13.
  */
-public class UserLickCommentAction extends BaseAction {
+public class UserLikeCommentAction extends BaseAction {
     @Override
     public void action() throws IOException {
         if (isPost()) {

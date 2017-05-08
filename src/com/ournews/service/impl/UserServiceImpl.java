@@ -26,31 +26,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String registerManager(String phone, String code, String time, String key) {
-        if (MyUtils.isNull(phone) || !MyUtils.isNumber(code) || MyUtils.isNull(time) || MyUtils.isNull(key)) {
+    public String registerManager(String phone, String code, String password, String time, String key) {
+        if (MyUtils.isNull(phone) || !MyUtils.isNumber(code) || MyUtils.isNull(password) || MyUtils.isNull(time) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isPhone(phone)) {
             return ResultUtil.getErrorJSON(Constant.PHONE_NUMBER_ERROR).toString();
+        } else if (!MyUtils.isPassword(password)) {
+            return ResultUtil.getErrorJSON(Constant.PASSWORD_LENGTH_ERROR).toString();
         } else if (!MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
         } else if (!MD5Util.getMD5(Constant.KEY + code + time).equals(key)) {
             return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
         }
-        return new UserDaoImpl().registerManager(phone, code);
+        return new UserDaoImpl().registerManager(phone, code, password);
     }
 
     @Override
-    public String loginManager(String phone, String code, String time, String key) {
-        if (MyUtils.isNull(phone) || MyUtils.isNull(code) || MyUtils.isNull(time)) {
+    public String loginManager(String phone, String time, String key) {
+        if (MyUtils.isNull(phone) || MyUtils.isNull(time)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isPhone(phone)) {
             return ResultUtil.getErrorJSON(Constant.PHONE_NUMBER_ERROR).toString();
         } else if (!MyUtils.isTime(time)) {
             return ResultUtil.getErrorJSON(Constant.CONNECT_TIME_OUT).toString();
-        } else if (!MD5Util.getMD5(Constant.KEY + code + time).equals(key)) {
-            return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
         }
-        return new UserDaoImpl().loginManager(phone, code);
+        return new UserDaoImpl().loginManager(phone, time, key);
     }
 
     @Override

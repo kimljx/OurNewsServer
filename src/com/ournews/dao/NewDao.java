@@ -7,6 +7,8 @@ public interface NewDao {
 
     String addNews(String mid, String title, String cover, String abstractContent, String content, String type, String push);
 
+    String getOwnNew(String mid, String page, String size, String sort);
+
     String getHomeNews(String selectType);
 
     String getNewList(String type, String page, String size, String sort);

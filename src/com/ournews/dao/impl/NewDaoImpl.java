@@ -61,6 +61,48 @@ public class NewDaoImpl implements NewDao {
     }
 
     @Override
+    public String getOwnNew(String mid, String page, String size, String sort) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,n.type,n.state" +
+                " FROM news AS n WHERE  n.mid = \"" + mid + "\"";
+        if (sort.equals("1"))
+            sql = sql + " ORDER BY n.id DESC";
+        sql = sql + " limit " + ((Integer.valueOf(page) - 1) * Integer.valueOf(size)) + "," + size;
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null) {
+                JSONArray jsonArray = new JSONArray();
+                while (resultSet.next()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", resultSet.getLong(1));
+                    jsonObject.put("title", resultSet.getString(2));
+                    jsonObject.put("cover", resultSet.getString(3));
+                    jsonObject.put("abstract", resultSet.getString(4));
+                    jsonObject.put("create_time", DateUtil.getTime(resultSet.getLong(5)));
+                    jsonObject.put("type", resultSet.getInt(6));
+                    jsonObject.put("state", resultSet.getInt(7));
+                    jsonArray.add(jsonObject);
+                }
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("news", jsonArray);
+                return ResultUtil.getSuccessJSON(jsonObject).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
     public String getHomeNews(String selectType) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

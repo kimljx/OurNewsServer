@@ -13,11 +13,10 @@ public class ManagerLoginAction extends BaseAction {
     public void action() throws IOException {
         if (isPost()) {
             String phone = request.getParameter("phone");
-            String code = request.getParameter("code");
             String time = request.getParameter("time");
             String key = request.getParameter("key");
 
-            sendJSON(new UserServiceImpl().loginManager(phone, code, time, key));
+            sendJSON(new UserServiceImpl().loginManager(phone, time, key));
         } else {
             sendJSON(getNoPostResponse());
         }
