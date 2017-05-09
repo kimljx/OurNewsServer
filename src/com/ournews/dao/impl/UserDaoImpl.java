@@ -40,12 +40,11 @@ public class UserDaoImpl implements UserDao {
                     preparedStatement.setString(1, phone);
                     preparedStatement.setInt(2, code);
                     preparedStatement.setLong(3, System.currentTimeMillis());
-                    if (preparedStatement.executeUpdate() == 1) {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("phone", phone);
-                        jsonObject.put("code", code);
-                        return ResultUtil.getSuccessJSON(jsonObject).toString();
-                    }
+                    preparedStatement.executeUpdate();
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("phone", phone);
+                    jsonObject.put("code", code);
+                    return ResultUtil.getSuccessJSON(jsonObject).toString();
                 }
             }
             return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();

@@ -9,6 +9,8 @@ public interface NewDao {
 
     String getOwnNew(String mid, String page, String size, String sort);
 
+    String changeNewState(String id, String nid, String state);
+
     String getHomeNews(String selectType);
 
     String getNewList(String type, String page, String size, String sort);

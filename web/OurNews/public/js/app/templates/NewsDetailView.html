@@ -1,0 +1,34 @@
+<div class="page-head">
+    <h3>
+        今日头条
+    </h3>
+    <span class="sub-title">Welcome to the headlines page</span>
+</div>
+<div id="wrapper">
+    <div class=" index-middle" id="J_content">
+        <div id="article-main">
+            <h1 class="article-title"><%= this.newsDetailData.newsAbstractVal %></h1>
+            <div class="articleInfo">
+                <span class="src"><%= this.newsDetailData.manager.nick_name %></span>
+                <span class="time"><%= this.newsDetailData.newsCreateTimeVal %></span>
+            </div>
+            <div class="article-content">
+                <%= this.newsDetailData.contentList %>
+                <div class="y-box article-actions">
+                    <div riot-tag="actionBox" class="actionBox" style="display: flex;">
+                        <div class="repin newsCollectBtn" nidVal="<%= this.newsDetailData.id %>"
+                             is_collected="<%= this.newsDetailData.is_collected %>"><i
+                                class="fa fa-star-o"></i><span>收藏</span>
+                        </div>
+                        <p style="margin-top: -3px;margin-left: 5px;color: #999;">(<%=
+                            this.newsDetailData.collection_num %>)</p>
+                        <div id="J_articleReport"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="comment-section">
+
+            </div>
+        </div>
+    </div>
+</div>

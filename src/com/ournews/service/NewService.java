@@ -8,6 +8,8 @@ public interface NewService {
 
     String getOwnNew(String mid, String token, String page, String size, String sort);
 
+    String changeNewState(String id, String token, String nid, String state);
+
     String getHomeNew(String type);
 
     String getTypeNew(String type, String page, String size, String sort);

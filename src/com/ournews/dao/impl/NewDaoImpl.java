@@ -24,7 +24,7 @@ public class NewDaoImpl implements NewDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "INSERT INTO news ( mid , title , cover , abstract , content , create_time , type ) VALUES ( ? , ? , ? , ? , ? , ? )";
+        String sql = "INSERT INTO news ( mid , title , cover , abstract , content , create_time , type ) VALUES ( ? , ? , ? , ? , ? , ? , ? )";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -66,7 +66,7 @@ public class NewDaoImpl implements NewDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,n.type,n.state" +
-                " FROM news AS n WHERE  n.mid = \"" + mid + "\"";
+                " FROM news AS n WHERE n.mid = \"" + mid + "\"";
         if (sort.equals("1"))
             sql = sql + " ORDER BY n.id DESC";
         sql = sql + " limit " + ((Integer.valueOf(page) - 1) * Integer.valueOf(size)) + "," + size;
@@ -103,13 +103,54 @@ public class NewDaoImpl implements NewDao {
     }
 
     @Override
+    public String changeNewState(String id, String nid, String state) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String sql = "SELECT count(1),n.mid,n.state FROM news AS n,manager_user AS m WHERE n.mid = m.id AND n.id = \"" + nid + "\"";
+        try {
+            connection = SQLManager.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet != null && resultSet.next()) {
+                if (resultSet.getInt(1) != 0) {
+                    if (resultSet.getString(2).equals(id)) {
+                        if (!resultSet.getString(3).equals(state)) {
+                            SQLManager.closeResultSet(resultSet);
+                            SQLManager.closePreparedStatement(preparedStatement);
+                            sql = "UPDATE news SET state = \"" + state + "\" WHERE id = \"" + nid + "\"";
+                            connection = SQLManager.getConnection();
+                            preparedStatement = connection.prepareStatement(sql);
+                            if (preparedStatement.executeUpdate() == 1) {
+                                return ResultUtil.getSuccessJSON(new JSONObject()).toString();
+                            }
+                            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+                        }
+                        return ResultUtil.getErrorJSON(Constant.NO_NEED_CHANGE_NEW_STATE).toString();
+                    }
+                    return ResultUtil.getErrorJSON(Constant.NO_PERMISSION_CHANGE_NEW_INFO).toString();
+                }
+                return ResultUtil.getErrorJSON(Constant.NEW_NO_EXIST).toString();
+            }
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } finally {
+            SQLManager.closeResultSet(resultSet);
+            SQLManager.closePreparedStatement(preparedStatement);
+            SQLManager.closeConnection(connection);
+        }
+    }
+
+    @Override
     public String getHomeNews(String selectType) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ResultSet resultSetNum = null;
         String sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,m.id,m.nick_name,m.sex,m.sign,m.birthday,m.photo" +
-                " FROM news AS n,manager_user AS m WHERE n.state = \"1\" AND ";
+                " FROM news AS n,manager_user AS m WHERE n.mid = m.id AND n.state = \"1\" AND ";
         int rows;
         try {
             connection = SQLManager.getConnection();
@@ -362,7 +403,7 @@ public class NewDaoImpl implements NewDao {
         ResultSet resultSet = null;
         ResultSet resultSetNum = null;
         String sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,m.id,m.nick_name,m.sex,m.sign,m.birthday,m.photo" +
-                " FROM news AS n,manager_user AS m WHERE n.state = \"1\" AND n.type = \"" + type + "\"";
+                " FROM news AS n,manager_user AS m WHERE n.state = \"1\" AND n.mid = m.id AND n.type = \"" + type + "\"";
         if (sort.equals("1"))
             sql = sql + " ORDER BY n.id DESC";
         sql = sql + " limit " + ((Integer.valueOf(page) - 1) * Integer.valueOf(size)) + "," + size;
@@ -448,7 +489,7 @@ public class NewDaoImpl implements NewDao {
         ResultSet resultSet = null;
         ResultSet resultSetNum = null;
         String sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,n.type,m.id,m.nick_name,m.sex,m.sign,m.birthday,m.photo" +
-                " FROM news AS n,manager_user AS m WHERE state = \"1\" AND type != \"6\"";
+                " FROM news AS n,manager_user AS m WHERE state = \"1\" AND n.mid = m.id AND type != \"6\"";
         char[] cs = name.toCharArray();
         for (char c : cs) {
             sql = sql + " AND n.title LIKE \"%" + c + "%\"";

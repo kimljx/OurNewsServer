@@ -1,0 +1,10 @@
+/* desktop.css */
+@import url("../lib/theme/css/bootstrap.min.css");
+@import url("bootstrap-datetimepicker.min.css");
+/*@import url("../js/libs/webuploader/webuploader.css");*/
+@import url("../lib/theme/css/slidebars.css");
+@import url("../lib/theme/css/style.css");
+@import url("../lib/theme/css/style-responsive.css");
+@import url("commonstyles.css");
+
+

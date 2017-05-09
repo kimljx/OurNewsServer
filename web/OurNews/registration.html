@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Template">
+    <meta name="keywords" content="admin dashboard, admin, flat, flat ui, ui kit, app, web app, responsive">
+    <link rel="shortcut icon" href="img/ico/favicon.png">
+    <title>Registration</title>
+
+    <!-- Base Styles -->
+    <link href="public/lib/theme/css/style.css" rel="stylesheet">
+    <link href="public/lib/theme/css/style-responsive.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="public/lib/theme/js/html5shiv.min.js"></script>
+    <script src="public/lib/theme/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+  <body class="login-body">
+
+      <div class="login-logo">
+          <img src="img/login_logo.png" alt=""/>
+      </div>
+
+      <h2 class="form-heading">注册</h2>
+      <div class="container log-row">
+          <form class="form-signin" action="index.html">
+              <!--<p>请输入您的私人信息</p>-->
+              <!--<input type="text" class="form-control" placeholder="姓名" autofocus>-->
+              <!--<input type="text" class="form-control" placeholder="Address" autofocus>-->
+              <!--<input type="text" class="form-control" placeholder="Email" autofocus>-->
+              <!--<input type="text" class="form-control" placeholder="City/Town" autofocus>-->
+              <!--<div class="radio-custom radio-success">-->
+                  <!--<input type="radio" value="male" checked="checked" name="option-yes" id="male">-->
+                  <!--<label for="male">男</label>-->
+                  <!--<input type="radio"  value="famale" name="option-yes" id="female">-->
+                  <!--<label for="female">女</label>-->
+              <!--</div>-->
+
+              <p>请输入您的账户信息</p>
+              <input id="txtUserName" type="text" class="form-control" placeholder="用户名" autofocus>
+              <input id="txtPassword" type="password" class="form-control" placeholder="密码">
+              <input id="txtConfirmPassword" type="password" class="form-control" placeholder="请再次确认密码">
+              <label class="checkbox-custom check-success">
+                  <input type="checkbox" value="agree this condition" id="checkbox1"> <label for="checkbox1">我同意</label>
+              </label>
+
+
+              <button id="btnRegistration" class="btn btn-lg btn-success btn-block" type="submit">注册</button>
+
+              <div class="registration m-t-20 m-b-20">
+                  已经注册了!
+                  <a class="" href="login.html">
+                      登录
+                  </a>
+              </div>
+          </form>
+      </div>
+
+      <!--jquery-1.11.1.min-->
+      <script src="public/lib/theme/js/jquery-1.11.1.min.js"></script>
+      <!--Bootstrap Js-->
+      <script src="public/lib/theme/js/bootstrap.min.js"></script>
+      <!--<script src="lib/theme/js/jrespond.min.js"></script>-->
+
+      <script src="public/js/libs/ourNewsJS/urlConfig.js"></script>
+      <script src="public/js/libs/ourNewsJS/app.js"></script>
+      <script src="public/js/libs/ourNewsJS/registration.js"></script>
+      <script src="public/js/libs/jquery.md5.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<div class="modal fade">
+    <div class="modal-dialog" style="width: 488px;margin: 200px auto;">
+        <div class="modal-content moco-modal-layer fixed" style="z-index: 917; visibility: visible; opacity: 1;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <div class="moco-modal-title">
+                <div><span>洗心革面</span>
+                </div>
+            </div>
+            <div class="moco-modal-inner">
+                <div class="moco-modal-dialog" style="display: block;">
+                    <div class="tpl-avator">
+                        <div class="moco-form-group avator-wapper">
+                            <div class="avator-mode"><img class="avator-img" id="js-portrait"
+                                                          src="http://img.mukewang.com/561e14f20001ac2701000100-200-200.jpg"
+                                                          data-portrait="{$userinfo.portrait}" width="192" height="192">
+                            </div>
+                            <div class="clearfix w140"><a herf="javascript:void(0);"
+                                                          class="pull-left js-avator-try avator-try">换一换</a>
+                                <form target="uploadtarget" action="uploadImage" method="post"
+                                      enctype="multipart/form-data"
+                                      class="pull-right">
+                                    <a herf="javascript:void(0)" class="avator-btn-fake uploderPhoto">上传头像</a>
+                                    <input class="hide" type="file" title="上传头像" name="upload" id="upload">
+                                    <input class="hide" type="hidden" name="type" value="1">
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="moco-form-group w140"><label class="moco-control-label"></label>
+                            <div class="moco-control-input"><a href="javascript:void(0);"
+                                                               class="moco-btn moco-btn-blue js-avator-save marR10">确定</a>
+                                <a href="javascript:void(0);" class="moco-btn moco-btn-normal js-modal-close">取消</a>
+                                <p class="js-gerror g_error"></p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

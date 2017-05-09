@@ -139,5 +139,8 @@
         <action name="getOwnNewList" method="action" class="com.ournews.action.manager.ManagerGetOwnNewAction">
             <result type="json"/>
         </action>
+        <action name="changeNewState" method="action" class="com.ournews.action.manager.ManagerChangeNewStateAction">
+            <result type="json"/>
+        </action>
     </package>
 </struts>

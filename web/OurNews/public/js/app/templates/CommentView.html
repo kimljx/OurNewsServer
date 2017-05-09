@@ -1,0 +1,58 @@
+<div riot-tag="comment" id="comment">
+    <%if(!this.comment_num){%>
+    <div class="c-header"><em>0&nbsp;</em>条评论</div>
+    <%}else{%>
+    <div class="c-header"><em><%= this.comment_num %>&nbsp;</em>条评论</div>
+    <%}%>
+    <div riot-tag="inputBox" ismain="true"
+         avatar="http://q.qlogo.cn/qqapp/100290348/D7B56BB0D1616D322031AD336285B55D/100"
+         group_id="6398661908660453634" item_id="6398671645938024962">
+        <div class="inputBox">
+            <div class="y-box">
+                <div class="avatar-wrap avatar-wrap-center"><img alt=""
+                                                                 src="http://q.qlogo.cn/qqapp/100290348/D7B56BB0D1616D322031AD336285B55D/100">
+                </div>
+                <div class="input-wrap  ">
+                    <div class="c-textarea" ga_event="click_input_comment"><textarea id="commentTextarea"
+                                                                                     name="inputText"
+                                                                                     placeholder="写下您的评论..."></textarea>
+                    </div>
+                    <div class="c-action" ga_event="click_publish_comment">
+                        <%if(!this.comments){%>
+                        <div nid="-1" class="c-submit">评论</div>
+                        <%}else{%>
+                        <div nid="<%= this.comments.attributes.comments.id %>" class="c-submit">评论</div>
+                        <%}%>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul>
+        <%if(this.comments){if(this.comments.attributes.comments.length){_.each(this.comments.attributes.comments,function(itemComment){%>
+        <li class="c-item"><a target="_blank" class="avatar-wrap" href="/c/user/3603767672/"> <img
+                alt=""
+                src="<%= AppConfig.apiPicURL+'?name'+itemComment.user.photo %>">
+        </a>
+            <div class="c-content">
+                <div class="c-user-info"><a class="c-user-name" target="_blank"
+                                            href="/c/user/3603767672/"><%= itemComment.user.nick_name %></a>
+                    <span class="c-create-time"><%= itemComment.create_time %></span></div>
+                <p><%= itemComment.content %></p>
+                <span id="<%= 'isLikeBtn'+itemComment.id %>" class="y-right c-digg isLikeBtn" title="点赞"
+                      isLikeVal="<%= itemComment.is_like %>" commentIdVal="<%= itemComment.id %>">
+                            <%= itemComment.like_num %>&nbsp;
+                            <i class="fa fa-thumbs-o-up"></i></span></div>
+            <div class="J_input_0"></div> <!--riot placeholder-->
+        </li>
+        <%})}else{%>
+        <li class="empty">暂无评论</li>
+        <%}}%>
+        <!--riot placeholder-->
+    </ul>
+    <% if(this.comments){if(this.comments.attributes.comments.length){ %>
+    <div id="allComments" class="c-load-more" ga_event="click_loadmore_comment">查看全部评论</div>
+    <%}}%>
+    <div id="J_report"></div>
+</div>

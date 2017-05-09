@@ -1,0 +1,28 @@
+<!-- profile head start-->
+<div class="profile-hero">
+    <div class="profile-intro">
+        <img src="public/img/ourNewsImg/user-logo.jpeg" alt=""/>
+        <h1><%= this.model.get('nick_name') %></h1>
+        <%if(this.model.get('sign')){%>
+        <span><%= this.model.get('sign') %></span>
+        <%}else{%>
+        <span>很懒，没什么也没有留下！</span>
+        <%}%>
+    </div>
+</div>
+<div id="wrapper" class="wrapper-noBackgroundColor flexBox">
+    <div class="left">
+        <div riot-tag="tab">
+            <ul class="tab tab-0">
+                <li class="active" code="1" idx="0">浏览历史</li>
+                <li class="" code="2" idx="1">收藏新闻</li>
+                <!--riot placeholder-->
+            </ul>
+        </div>
+        <div id="BrowsingHistoryAndCollection" riot-tag="feedBox">
+
+        </div>
+    </div>
+
+</div>
+<!-- profile head end-->

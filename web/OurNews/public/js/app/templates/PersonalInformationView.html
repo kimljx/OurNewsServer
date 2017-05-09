@@ -1,0 +1,39 @@
+<div id="wrapper">
+    <div class="setting-right-wrap wrap-boxes settings">
+
+        <div class="formBox">
+            <div id="setting-profile" class="setting-wrap setting-profile">
+                <div class="common-title">
+                    个人信息
+                    <a href="#userInfoUpdateModal" class="pull-right js-edit-info"><i class="icon-note"></i>编辑</a>
+                </div>
+                <div class="line"></div>
+                    <div class="avator-wapper">
+                        <div class="avator-mode">
+                            <img class="avator-img" src="<%= AppConfig.apiPicURL+'?name='+this.userInfoData.photo %>" data-portrait="561e14f20001ac2701000100" width="92" height="92">
+                            <div class="update-avator" style="bottom: -32px;">
+                                <p><a href="#userPhotoUpdateModal" class="js-avator-link">更换头像</a></p>
+                            </div>
+                        </div>
+                    </div>
+                <div class="info-wapper">
+                    <div class="info-box clearfix">
+                        <label class="pull-left">昵称</label><div class="pull-left"><%= this.userInfoData.nick_name %></div>
+                    </div>
+                    <div class="info-box clearfix">
+                        <label class="pull-left">性别</label><div class="pull-left">
+                        <%= this.userInfoData.sex %></div>
+                    </div>
+                    <div class="info-box clearfix">
+                        <label class="pull-left">生日</label><div class="pull-left">
+                        <%= this.userInfoData.birthday %></div>
+                    </div>
+                    <div class="info-box clearfix">
+                        <label class="pull-left">个性签名</label><div class="pull-left"><%= this.userInfoData.sign %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,132 @@
+<div class="modal fade">
+    <div class="modal-dialog" style="width: 488px;margin: 200px auto;">
+        <div class="modal-content moco-modal-layer fixed"  style="z-index: 917; visibility: visible; opacity: 1;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="moco-modal-title">
+                    <div><span>编辑个人信息</span>
+                    </div>
+                </div>
+                <div class="moco-modal-inner">
+                    <div class="moco-modal-dialog" style="display: block;">
+                        <div class="edit-info">
+                            <form class="js-wapper-form" id="profile">
+                                <%if(this){%>
+                                <div class="moco-form-group">
+                                    <label class="moco-control-label">昵称：</label>
+                                    <div class="moco-control-input">
+                                        <input type="text" name="nickname" id="nick" autocomplete="off" data-validate="require-nick"
+                                               class="moco-form-control" value="<%= this.nick_name %>" placeholder="请输入昵称">
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group">
+                                    <label class="moco-control-label">密码：</label>
+                                    <div class="moco-control-input">
+                                        <input type="password" name="password" id="password" autocomplete="off" data-validate="require-nick"
+                                               class="moco-form-control" value="<%= this.password %>" placeholder="请输入密码">
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group">
+                                    <label class="moco-control-label">生日：</label>
+                                    <div class="moco-control-input">
+                                        <input type="text" name="birthday" style="cursor:not-allowed; " value="<%= this.birthday %>" readonly class="form_datetime moco-form-control" placeholder="点击选择日期">
+                                        <script type="text/javascript">
+                                            $(".form_datetime").datetimepicker({minView: "month", //选择日期后，不会再跳转去选择时分秒
+                                                language:  'zh-CN',
+                                                format: 'yyyy年m月d日',
+                                                todayBtn:  1,
+                                                autoclose: 1,});
+                                        </script>
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group wlfg-wrap flexBox">
+                                    <label class="moco-control-label h16 lh16">性别：</label>
+                                    <div class="moco-control-input rlf-group rlf-radio-group">
+                                        <label><input type="radio" hidefocus="true" value="0" name="sex">保密</label>
+                                        <label><input type="radio" hidefocus="true" value="1" checked="checked" name="sex">男</label>
+                                        <label><input type="radio" hidefocus="true" value="2" name="sex">女</label>
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group wlfg-wrap">
+                                    <label class="moco-control-label">个性签名：</label>
+                                    <div class="moco-control-input">
+                                        <div class="pr">
+                                <textarea name="aboutme" id="aboutme" rows="5"
+                                          class="noresize js-sign moco-form-control"><%= this.sign %></textarea>
+                                            <p class="numCanInput js-numCanInput ">还可以输入128个字符</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wlfg-wrap clearfix flexBox"><label class="moco-control-label"></label>
+                                    <div class="moco-control-input"><a href="javascript:void(0);" id="profile-submit"
+                                                                       class="moco-btn moco-btn-blue marR10">确定</a> <a
+                                            href="javascript:void(0);" class="moco-btn moco-btn-normal js-modal-close">取消</a>
+                                        <p class="js-gerror g_error"></p></div>
+                                </div>
+                                <%}else{%>
+                                <div class="moco-form-group">
+                                    <label class="moco-control-label">昵称：</label>
+                                    <div class="moco-control-input">
+                                        <input type="text" name="nickname" autocomplete="off" data-validate="require-nick"
+                                               class="moco-form-control" value="" placeholder="请输入昵称">
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group">
+                                    <label class="moco-control-label">密码：</label>
+                                    <div class="moco-control-input">
+                                        <input type="password" name="password" autocomplete="off" data-validate="require-nick"
+                                               class="moco-form-control" value="" placeholder="请输入密码">
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group">
+                                    <label class="moco-control-label">生日：</label>
+                                    <div class="moco-control-input">
+                                        <input type="text" name="birthday" style="cursor:not-allowed; " value="" readonly class="form_datetime moco-form-control" placeholder="点击选择日期">
+                                        <script type="text/javascript">
+                                            $(".form_datetime").datetimepicker({minView: "month", //选择日期后，不会再跳转去选择时分秒
+                                                language:  'zh-CN',
+                                                format: 'yyyy年m月d日',
+                                                todayBtn:  1,
+                                                autoclose: 1,});
+                                        </script>
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group wlfg-wrap flexBox">
+                                    <label class="moco-control-label h16 lh16">性别：</label>
+                                    <div class="moco-control-input rlf-group rlf-radio-group">
+                                        <label><input type="radio" hidefocus="true" value="0" name="sex">保密</label>
+                                        <label><input type="radio" hidefocus="true" value="1" name="sex">男</label>
+                                        <label><input type="radio" hidefocus="true" value="2" name="sex">女</label>
+                                        <div class="rlf-tip-wrap errorHint color-red"></div>
+                                    </div>
+                                </div>
+                                <div class="moco-form-group wlfg-wrap">
+                                    <label class="moco-control-label">个性签名：</label>
+                                    <div class="moco-control-input">
+                                        <div class="pr">
+                                <textarea name="aboutme" rows="5"
+                                          class="noresize js-sign moco-form-control"></textarea>
+                                            <p class="numCanInput js-numCanInput ">还可以输入128个字符</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wlfg-wrap clearfix flexBox"><label class="moco-control-label"></label>
+                                    <div class="moco-control-input"><a href="javascript:void(0);" id=""
+                                                                       class="moco-btn moco-btn-blue marR10">确定</a> <a
+                                            href="javascript:void(0);" class="moco-btn moco-btn-normal js-modal-close">取消</a>
+                                        <p class="js-gerror g_error"></p></div>
+                                </div>
+                                <%}%>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

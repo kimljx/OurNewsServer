@@ -1,0 +1,9 @@
+/* mobile.css */
+/*@import url("jquery.mobile.css");*/
+/*@import url("commonstyles.css");*/
+@import url("../lib/theme/css/bootstrap.min.css");
+@import url("commonstyles.css");
+@import url("../lib/theme/css/slidebars.css");
+@import url("../lib/theme/css/style.css");
+@import url("../lib/theme/css/style-responsive.css");
+

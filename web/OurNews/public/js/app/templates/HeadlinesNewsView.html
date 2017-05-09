@@ -1,0 +1,71 @@
+<!-- HTML Template -->
+<div class="page-head">
+    <h3>
+        今日头条
+    </h3>
+    <span class="sub-title">Welcome to the headlines page</span>
+</div>
+<div id="wrapper">
+    <div class="news-list">
+        <ul class="news-list-ul">
+            <%if(!dataList){%>
+            <li class="empty">暂无内容</li>
+            <%}else{%>
+            <%_.each(dataList,function(item){ %>
+            <li class="news-item" ga_event="article_item_click" ad_id="" qihu_ad_id="" ad_track="">
+                <div class="item-inner y-box flexBox">
+                    <div class="lbox" ga_event="article_img_click">
+                        <a class="img-wrap" newsIdVal="<%= item.id %>"
+                           newsAbstractVal="<%= item.abstract%>"
+                           newsCreateTimeVal="<%= item.createtime %>" href="#newsDetail">
+                            <img class="newsCover" alt="" src="<%= AppConfig.apiPicURL+'?name='+item.cover %>">
+                        </a></div>
+                    <div class="normal rbox ">
+                        <div class="rbox-inner">
+                            <div class="title-box" ga_event="article_title_click">
+                                <a class="link" newsIdVal="<%= item.id %>"
+                                   newsAbstractVal="<%= item.abstract%>"
+                                   newsCreateTimeVal="<%= item.createtime %>" href="#newsDetail">
+                                    <%= item.title %>
+                                </a>
+                            </div>
+                            <div class="y-box footer flexBox">
+                                <div class="y-left">
+                                    <div class="y-left">
+                                        <%if(item.manager){%>
+                                        <a class="lbtn media-avatar" target="_blank" ga_event="article_avatar_click"
+                                           href="/c/user/3259097877/">
+                                            <img alt=""
+                                                 src="<%= AppConfig.apiPicURL+'?name='+item.manager.photo %>">
+                                        </a>
+
+                                        <a class="lbtn source" target="_blank" ga_event="article_name_click"
+                                           href=""><%= item.manager.nick_name %>&nbsp;⋅</a>
+                                        <%}else{%>
+                                        <a class="lbtn source" target="_blank" ga_event="article_name_click"
+                                           href="">无名氏&nbsp;⋅</a>
+                                        <%}%>
+                                        <a class="lbtn comment" target="_blank" ga_event="article_comment_click"
+                                           href="/group/6393562390402793729//#comment_area">
+                                            &nbsp;<%= item.comment_num %>评论&nbsp;⋅
+                                        </a>
+                                    </div>
+                                    <span class="lbtn">&nbsp;<%= item.createtime %></span></div>
+                                <div class="y-right">
+                                    <span class="dislike" data-groupid="6393562390402793729"
+                                          ga_event="article_dislike_click">
+                                        不感兴趣
+                                        <i class="y-icon icon-dislikenewfeed"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </li>
+            <% }) %>
+            <% } %>
+        </ul>
+    </div>
+</div>

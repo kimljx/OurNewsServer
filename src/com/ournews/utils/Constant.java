@@ -78,6 +78,10 @@ public class Constant {
     public static final int TOKEN_TIME_OUT = 10006;
     // 新增新闻失败
     public static final int ADD_NEWS_ERROR = 10010;
+    // 此用户没有编辑此新闻的权限
+    public static final int NO_PERMISSION_CHANGE_NEW_INFO = 10011;
+    // 新闻已是此状态,无需修改
+    public static final int NO_NEED_CHANGE_NEW_STATE = 10012;
     // 连接激光服务器失败
     public static final int JIGUANG_INTERNET_ERROR = 10020;
 }

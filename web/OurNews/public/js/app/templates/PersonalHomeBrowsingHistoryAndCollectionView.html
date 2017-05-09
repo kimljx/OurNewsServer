@@ -1,0 +1,65 @@
+<div class="feedBox" name="feedbox">
+    <div riot-tag="relatedFeed" ban="false" page_type="0" empty="true">
+        <div id="relatedFeed" class="relatedFeed">
+            <ul class="news-list-ul ul-padding-15">
+                <%if(!dataList.length){%>
+                <li class="empty">暂无内容</li>
+                <%}else{%>
+                <% _.each(dataList,function(item){ %>
+                <li class="news-item" ga_event="article_item_click" ad_id="" qihu_ad_id="" ad_track="">
+                    <div class="item-inner y-box flexBox">
+                        <div class="lbox" ga_event="article_img_click">
+                            <a class="img-wrap" href="#newsDetail">
+                                <img class="newsCover" newsIdVal="<%= item.id %>"
+                                     newsAbstractVal="<%= item.abstract%>"
+                                     newsCreateTimeVal="<%= item.createtime %>"
+                                     alt="" src="<%= AppConfig.apiPicURL+'?name='+item.cover %>">
+                            </a>
+                        </div>
+                        <div class="normal rbox ">
+                            <div class="rbox-inner">
+                                <div class="title-box" ga_event="article_title_click">
+                                    <a class="link" newsIdVal="<%= item.id %>"
+                                       newsAbstractVal="<%= item.abstract%>"
+                                       newsCreateTimeVal="<%= item.createtime %>"
+                                       href="#newsDetail">
+                                        <%= item.title %>
+                                    </a></div>
+                                <div class="y-box footer flexBox">
+                                    <div class="y-left">
+                                        <div class="y-left">
+                                            <!--<a class="lbtn media-avatar" target="_blank" ga_event="article_avatar_click"-->
+                                            <!--href="/c/user/3259097877/">-->
+                                            <!--<img alt="" src="http://p1.pstatp.com/large/97d000c210ea2ab96df">-->
+                                            <!--</a>-->
+                                            <%if(item.manager){%>
+                                            <a class="lbtn source" target="_blank"
+                                               ga_event="article_name_click"
+                                               href=""><%= item.manager.nick_name %>&nbsp;⋅</a>
+                                            <%}else{%>
+                                            <a class="lbtn source" target="_blank"
+                                               ga_event="article_name_click"
+                                               href="">无名氏&nbsp;⋅</a>
+                                            <%}%>
+                                            <a class="lbtn comment" target="_blank"
+                                               ga_event="article_comment_click"
+                                            >&nbsp;<%= item.comment_num %>评论&nbsp;⋅</a></div>
+                                        <span class="lbtn">&nbsp;<%= item.createtime %></span></div>
+                                    <div class="y-right">
+                                    <span class="dislike" data-groupid="6393562390402793729"
+                                          ga_event="article_dislike_click"> 不感兴趣
+                                        <i class="y-icon icon-dislikenewfeed"></i>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </li>
+                <% }) %>
+                <%}%>
+            </ul>
+        </div>
+    </div>
+</div>

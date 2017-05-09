@@ -58,6 +58,26 @@ public class NewServiceImpl implements NewService {
     }
 
     @Override
+    public String changeNewState(String id, String token, String nid, String state) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token) || !MyUtils.isNumber(nid) || !MyUtils.isNumber(state, 0, 1)) {
+            return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
+        }
+
+        int isTrueToken = new UserDaoImpl().managerTokenIsTrue(id, token);
+        if (isTrueToken == 1) {
+            return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
+        } else if (isTrueToken == 2) {
+            return ResultUtil.getErrorJSON(Constant.USER_NO_EXIST).toString();
+        } else if (isTrueToken == 3) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_ERROR).toString();
+        } else if (isTrueToken == 4) {
+            return ResultUtil.getErrorJSON(Constant.TOKEN_TIME_OUT).toString();
+        }
+
+        return new NewDaoImpl().changeNewState(id, nid, state);
+    }
+
+    @Override
     public String getHomeNew(String type) {
         if (MyUtils.isNull(type)) {
             return new NewDaoImpl().getHomeNews(null);
