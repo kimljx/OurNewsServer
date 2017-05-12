@@ -1,7 +1,7 @@
 /**
  * Created by ternence on 2017/3/23.
  */
-define(["jquery", "backbone", "collections/userInfoUpdateModalCollection", "text!templates/userInfoUpdateModalView.html"],
+define(["jquery", "backbone", "collections/userInfoUpdateModalCollection", "text!templates/UserInfoUpdateModalView.html"],
     function ($, Backbone, UserInfoUpdateModalCollection, template) {
         var UserInfoUpdateModalView = Backbone.View.extend({
             // The DOM Element associated with this view

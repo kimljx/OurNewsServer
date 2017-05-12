@@ -22,10 +22,14 @@ APIService.callAPI = function(url,method,data)
             data: data ,
             dataType: 'json',
             success: function(resp){
+                debugger;
                 if ( resp.result == "success" ) { //successfully
                     resolve(resp.data) //just return the data
                 } else { // failed
                     reject( resp.error_code ) // return error to reject
+                    if(resp.error_code==3002){
+                        window.location.href=AppConfig.localURL+"login.html";
+                    }
                 }
             } ,
             error : function(resp) {

@@ -1,7 +1,7 @@
 /**
  * Created by ternence on 2017/3/15.
  */
-define(["jquery", "backbone", "collections/headlinesNewsCollection", "text!templates/headlinesNewsView.html"],
+define(["jquery", "backbone", "collections/headlinesNewsCollection", "text!templates/HeadlinesNewsView.html"],
     function ($, Backbone, HeadlinesNewsCollection, template) {
         var HeadlinesNewsView = Backbone.View.extend({
             // The DOM Element associated with this view

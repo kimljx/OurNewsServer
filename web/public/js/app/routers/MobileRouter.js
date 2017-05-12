@@ -1,5 +1,5 @@
-// DesktopRouter.js
-// ----------------
+// MobileRouter.js
+// ---------------
 define([
         "jquery",
         "backbone",
@@ -33,7 +33,8 @@ define([
               NewsDetailModel, CommentModel,PersonalInformationModel,UserInfoUpdateModalModel, HeaderView,
               HomeNewsView, PersonalHomePageView, PersonalHomeBrowsingHistoryAndCollectionView /*PersonalHomeBrowsingHistoryListView*/, HeadlinesNewsView,
               NewsDetailView,PersonalInformationView,UserInfoUpdateModalView,UserPhotoUpdateModalView) {
-        var DesktopRouter = Backbone.Router.extend({
+
+        var MobileRouter = Backbone.Router.extend({
 
             initialize: function () {
                 // Tells Backbone to start watching for hashchange events
@@ -55,7 +56,6 @@ define([
 
             index: function () {
                 // Instantiates a new view which will render the header text to the page
-                debugger;
                 var self = this;
                 window.loginUser = new UserModel();
                 if(!document.cookie.split(";")[0].split("=")[1]){
@@ -66,7 +66,6 @@ define([
                         token: document.cookie.split(";")[1].split("=")[1]
                     });
                     promise.then(function (resp) {
-                        debugger;
                         window.loginUser.set(resp);
                         self.headerView=new HeaderView({model: window.loginUser});
                         $('.header-section').html( self.headerView.el );
@@ -107,29 +106,33 @@ define([
                 }
 
             },
-            // headlinesNews: function () {
-            //     var self = this;
-            //     if(!window.loginUser){
-            //         window.loginUser = new UserModel();
-            //         var promise = APIService.callAPI(AppConfig.apiURL + 'getHomeNews/checkLogin', 'POST', {
-            //             id: document.cookie.split(";")[0].split("=")[1],
-            //             token: document.cookie.split(";")[1].split("=")[1]
-            //         });
-            //         promise.then(function (resp) {
-            //             window.loginUser.set(resp);
-            //             self.headerView=new HeaderView({model: window.loginUser});
-            //             $('.header-section').html( self.headerView.el );
-            //         }).then(function (resp) {
-            //             self.headlinesNewsView = new HeadlinesNewsView();
-            //             $('#main-section').html( self.headlinesNewsView.el );
-            //             // new PersonalHomeBrowsingHistoryListView();
-            //         })
-            //     }else {
-            //         this.headlinesNewsView = new HeadlinesNewsView();
-            //         $('#main-section').html( this.headlinesNewsView.el );
-            //     }
-            //
-            // },
+            headlinesNews: function () {
+                var self = this;
+                if(!window.loginUser){
+                    window.loginUser = new UserModel();
+                    if(!document.cookie.split(";")[0].split("=")[1]){
+                        window.location.href=AppConfig.localURL+"login.html";
+                    }else {
+                        var promise = APIService.callAPI(AppConfig.apiURL + 'getHomeNews/checkLogin', 'POST', {
+                            id: document.cookie.split(";")[0].split("=")[1],
+                            token: document.cookie.split(";")[1].split("=")[1]
+                        });
+                        promise.then(function (resp) {
+                            window.loginUser.set(resp);
+                            self.headerView = new HeaderView({model: window.loginUser});
+                            $('.header-section').html(self.headerView.el);
+                        }).then(function (resp) {
+                            self.headlinesNewsView = new HeadlinesNewsView();
+                            $('#main-section').html(self.headlinesNewsView.el);
+                            // new PersonalHomeBrowsingHistoryListView();
+                        })
+                    }
+                }else {
+                    this.headlinesNewsView = new HeadlinesNewsView();
+                    $('#main-section').html( this.headlinesNewsView.el );
+                }
+
+            },
             newsDetail: function () {
                 var self = this;
                 if(!window.loginUser){
@@ -187,25 +190,28 @@ define([
 
 
             },
-            // userInfoUpdateModal:function () {
-            //     var self = this;
-            //     window.loginUser = new UserModel();
-            //     var promise = APIService.callAPI(AppConfig.apiURL + 'getHomeNews/checkLogin', 'POST', {
-            //         id: document.cookie.split(";")[0].split("=")[1],
-            //         token: document.cookie.split(";")[1].split("=")[1]
-            //     });
-            //     promise.then(function (resp) {
-            //         window.loginUser.set(resp);
-            //         self.headerView = new HeaderView({model: window.loginUser});
-            //         $('.header-section').html(self.headerView.el);
-            //     }).then(function (resp) {
-            //         self.userInfoUpdateModalView = new UserInfoUpdateModalView({model: window.loginUser});
-            //         self.userInfoUpdateModalView.render();
-            //         // new PersonalHomeBrowsingHistoryListView();
-            //     })
-            //
-            //
-            // },
+            userInfoUpdateModal:function () {
+                var self = this;
+                window.loginUser = new UserModel();
+                if(!document.cookie.split(";")[0].split("=")[1]){
+                    window.location.href=AppConfig.localURL+"login.html";
+                }else {
+                    var promise = APIService.callAPI(AppConfig.apiURL + 'getHomeNews/checkLogin', 'POST', {
+                        id: document.cookie.split(";")[0].split("=")[1],
+                        token: document.cookie.split(";")[1].split("=")[1]
+                    });
+                    promise.then(function (resp) {
+                        window.loginUser.set(resp);
+                        self.headerView = new HeaderView({model: window.loginUser});
+                        $('.header-section').html(self.headerView.el);
+                    }).then(function (resp) {
+                        self.userInfoUpdateModalView = new UserInfoUpdateModalView({model: window.loginUser});
+                        self.userInfoUpdateModalView.render();
+                        // new PersonalHomeBrowsingHistoryListView();
+                    })
+
+                }
+            },
             userPhotoUpdateModal:function () {
                 var self = this;
                 window.loginUser = new UserModel();
@@ -227,11 +233,11 @@ define([
                     })
                 }
             }
+        });
 
-            });
-
-        // Returns the DesktopRouter class
-        return DesktopRouter;
+        // Returns the MobileRouter class
+        return MobileRouter;
 
     }
+
 );
