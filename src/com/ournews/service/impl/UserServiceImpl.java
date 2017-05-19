@@ -195,6 +195,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String checkUpdate(String time, String key) {
+        //Service层判断参数是否符合规范,是否超时,判断用户是否异地登录
         if (!MyUtils.isNumber(time) || MyUtils.isNull(key)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         } else if (!MyUtils.isTime(time)) {
@@ -202,6 +203,7 @@ public class UserServiceImpl implements UserService {
         } else if (!MD5Util.getMD5(Constant.KEY + time).equals(key)) {
             return ResultUtil.getErrorJSON(Constant.KEY_ERROR).toString();
         }
+        //所有参数合格则交给Dao层处理服务器
         return new UserDaoImpl().checkUpdate();
     }
 }

@@ -488,7 +488,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = "SELECT count(1),now_version,min_version,update_time,file_name,file_size,description FROM version WHERE id = 101";
+        String sql = "SELECT count(1),now_version,now_version_name,min_version,update_time,file_name,file_size,description FROM version WHERE id = 101";
         try {
             connection = SQLManager.getConnection();
             preparedStatement = connection.prepareStatement(sql);
@@ -498,11 +498,12 @@ public class UserDaoImpl implements UserDao {
                     if (resultSet.getInt(1) != 0) {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("now_version", resultSet.getInt(2));
-                        jsonObject.put("min_version", resultSet.getInt(3));
-                        jsonObject.put("update_time", DateUtil.getTime(resultSet.getLong(4)));
-                        jsonObject.put("file_name", resultSet.getString(5));
-                        jsonObject.put("file_size", resultSet.getLong(6));
-                        jsonObject.put("description", resultSet.getString(7));
+                        jsonObject.put("now_version_name", resultSet.getString(3));
+                        jsonObject.put("min_version", resultSet.getInt(4));
+                        jsonObject.put("update_time", DateUtil.getTime(resultSet.getLong(5)));
+                        jsonObject.put("file_name", resultSet.getString(6));
+                        jsonObject.put("file_size", resultSet.getLong(7));
+                        jsonObject.put("description", resultSet.getString(8));
                         return ResultUtil.getSuccessJSON(jsonObject).toString();
                     }
                 }
