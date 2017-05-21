@@ -916,7 +916,7 @@ public class NewDaoImpl implements NewDao {
                         SQLManager.closePreparedStatement(preparedStatement);
                         sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,n.type,m.id,m.nick_name,m.sex,m.sign,m.birthday,m.photo " +
                                 "FROM news AS n,collection AS c,manager_user AS m " +
-                                "WHERE c.uid = \"" + uid + "\" AND c.nid = n.id AND n.state = \"1\"";
+                                "WHERE n.mid = m.id AND c.uid = \"" + uid + "\" AND c.nid = n.id AND n.state = \"1\"";
                         if (sort.equals("1"))
                             sql = sql + " ORDER BY c.id DESC";
                         sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
@@ -1016,7 +1016,7 @@ public class NewDaoImpl implements NewDao {
                         SQLManager.closePreparedStatement(preparedStatement);
                         sql = "SELECT n.id,n.title,n.cover,n.abstract,n.create_time,n.type,m.id,m.nick_name,m.sex,m.sign,m.birthday,m.photo " +
                                 "FROM news AS n,history AS h,manager_user AS m " +
-                                "WHERE h.uid = \"" + uid + "\" AND h.nid = n.id AND n.state = \"1\"";
+                                "WHERE n.mid = m.id AND h.uid = \"" + uid + "\" AND h.nid = n.id AND n.state = \"1\"";
                         if (sort.equals("1"))
                             sql = sql + " ORDER BY h.id DESC";
                         sql = sql + " limit " + (((Integer.valueOf(page) - 1) * Integer.valueOf(size))) + "," + size;
