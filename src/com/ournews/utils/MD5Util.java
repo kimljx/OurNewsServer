@@ -19,9 +19,9 @@ public class MD5Util {
             md.update(str.getBytes());
             byte b[] = md.digest();
             int i;
-            StringBuilder buf = new StringBuilder("");
-            for (int offset = 0; offset < b.length; offset++) {
-                i = b[offset];
+            StringBuilder buf = new StringBuilder();
+            for (byte aB : b) {
+                i = aB;
                 if (i < 0)
                     i += 256;
                 if (i < 16)
