@@ -7,13 +7,15 @@
 <body>
 <form action="uploadImage" method="post" enctype="multipart/form-data">
     <table align="center" border="1">
-        <caption><h2>上传</h2></caption>
+        <caption>
+            <h2>上传</h2>
+        </caption>
         <tr>
             <td>上传文件：</td>
-            <td><input type="file" name="upload"/></td>
+            <td><input type="file" name="upload"/>
         </tr>
         <tr align="center">
-            <td colspan="2"><input type="submit" value="上传"/></td>
+            <td colspan="2"><input type="submit" value="上传"/>
         </tr>
     </table>
 </form>
