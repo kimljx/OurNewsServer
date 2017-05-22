@@ -106,11 +106,7 @@ public class MyUtils {
     }
 
     public static boolean isPhoto(String name) {
-        if (isNull(name))
-            return false;
-        if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".bmp"))
-            return true;
-        return false;
+        return !isNull(name) && (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".bmp"));
     }
 
     public static void zipImage(File file) throws IOException {
