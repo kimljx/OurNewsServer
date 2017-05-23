@@ -59,7 +59,8 @@ public class NewServiceImpl implements NewService {
 
     @Override
     public String changeNewState(String id, String token, String nid, String state) {
-        if (!MyUtils.isNumber(id) || MyUtils.isNull(token) || !MyUtils.isNumber(nid) || !MyUtils.isNumber(state, 0, 1)) {
+        if (!MyUtils.isNumber(id) || MyUtils.isNull(token) || !MyUtils.isNumber(nid)
+                || !MyUtils.isNumber(state, 0, 1)) {
             return ResultUtil.getErrorJSON(Constant.VALUES_ERROR).toString();
         }
 

@@ -146,10 +146,13 @@ public class UserDaoImpl implements UserDao {
                         sql = "UPDATE manager_user SET token = \"" + token + "\" , login_time = \"" + System.currentTimeMillis()
                                 + "\" WHERE phone = \"" + phone + "\"";
                         preparedStatement = connection.prepareStatement(sql);
+                        connection.setAutoCommit(false);
                         if (preparedStatement.executeUpdate() == 1) {
+                            connection.commit();
                             jsonObject.put("token", token);
                             return ResultUtil.getSuccessJSON(jsonObject).toString();
                         }
+                        connection.rollback();
                         return ResultUtil.getErrorJSON(Constant.SERVER_ERROR).toString();
                     }
                     return ResultUtil.getErrorJSON(Constant.PASSWORD_ERROR).toString();
